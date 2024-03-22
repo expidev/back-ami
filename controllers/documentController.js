@@ -9,8 +9,7 @@ const storage = multer.diskStorage({
         cb(null, 'uploads/dao_ami');
     },
     filename: (req, file, cb) => {
-        const insertId = uuidv4(); // Generate a new insertId for each file
-        cb(null, insertId + '_' + Date.now() + '_' + file.originalname);
+        cb(null, Date.now() + '_' + file.originalname);
     }
 });
 
@@ -34,9 +33,10 @@ const uploadAndInsert = async (req, res) => {
             }
 
             const files = req.files;
-            const { id_ami } = req.body;
 
-            console.log("Uploaded files:", files);
+            console.log(files.length)
+
+            const { id_ami } = req.body;
             
             for (const file of files) {
                 await documentsModel.insert([
