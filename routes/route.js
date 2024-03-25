@@ -1,11 +1,13 @@
 const documentsController = require("../controllers/documentController");
 const visitorController = require("../controllers/visitorController");
 const amiController = require("../controllers/amiController");
-const { ensureAuthenticated } = require("../middleware/authMiddleware");
+const adminController = require("../controllers/adminController");
 
 const router = require("express").Router();
 
-router.post('/ajout', ensureAuthenticated,documentsController.uploadAndInsert);
+router.post('/signin', adminController.post);
+
+router.post('/ajout', documentsController.uploadAndInsert);
 
 router.post('/', visitorController.insert)
 
