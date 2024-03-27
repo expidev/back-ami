@@ -14,6 +14,8 @@ router.post('/', visitorController.insert)
 
 router.get('/ami', authenticateAdmin, amiController.getList);
 
+router.get('/ami/:id_ami', authenticateAdmin, amiController.getAmiById);
+
 router.get('/visiteur/:id_visiteur', visitorController.getVisitorById)
 
 router.get('/documents/:id_ami', authenticateAdmin, documentsController.getListByAmi)

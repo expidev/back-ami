@@ -1,5 +1,6 @@
 const multer = require('multer');
 const documentsModel = require("../dao/documentsModel");
+const amiModel = require("../dao/amiModel")
 const { removeFile, downloadFile } = require('../helper');
 const path = require('path');
 
@@ -33,11 +34,7 @@ const uploadAndInsert = async (req, res) => {
             }
 
             const files = req.files;
-
-            console.log(files.length)
-
-            const { id_ami } = req.body;
-            console.log(req.user);
+            const { id_ami, description } = req.body;
             for (const file of files) {
                 await documentsModel.insert([
                     req.user.id,
@@ -48,7 +45,7 @@ const uploadAndInsert = async (req, res) => {
                     new Date()
                 ]);
             }
-
+            await amiModel.updateDescription(description, id_ami);
             res.status(201).json({ message: "Files uploaded and inserted successfully" });
         });
     } catch (error) {
