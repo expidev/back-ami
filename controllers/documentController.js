@@ -1,5 +1,7 @@
 const multer = require('multer');
 const documentsModel = require("../dao/documentsModel");
+const { removeFile, downloadFile } = require('../helper');
+const path = require('path');
 
 // Use a dynamic insertId for each request
 const storage = multer.diskStorage({
@@ -35,10 +37,10 @@ const uploadAndInsert = async (req, res) => {
             console.log(files.length)
 
             const { id_ami } = req.body;
-            
+            console.log(req.user);
             for (const file of files) {
                 await documentsModel.insert([
-                    1,
+                    req.user.id,
                     id_ami,
                     file.filename,
                     file.mimetype,
@@ -66,4 +68,28 @@ const getListByAmi = async (req, res) => {
     }
 };
 
-module.exports = { uploadAndInsert, getListByAmi };
+const removeDocument = async (req, res) => {
+    try {
+        const { id_fichier, nom_fichier } = req.params;
+        const filePath = path.join(__dirname,'..', 'uploads', 'dao_ami', nom_fichier);
+        console.log(filePath);
+        removeFile(filePath);
+        const result = await documentsModel.removeDocument(id_fichier);
+        res.status(200).json({ success: true, message: `Document supprimé.`});
+    } catch (error) {
+        console.error("Error getting list by ami:", error);
+        res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+};
+
+const downloadDocument = async (req, res) => {
+    try {
+        const { type_fichier, nom_fichier } = req.body;
+        await downloadFile(res, type_fichier, nom_fichier);
+    } catch (error) {
+        console.error("Error downloading the file:", error);
+        res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+};
+
+module.exports = { uploadAndInsert, getListByAmi, removeDocument, downloadDocument };
