@@ -15,10 +15,10 @@ const getList = async () => {
 const getAmiById = async (id_ami) => {
   try {
     const sql = `
-      SELECT * FROM ami WHERE id_ami = ?
+      SELECT * FROM ami WHERE id_ami LIKE ?
     `;
 
-    return await pool.query(sql, [id_ami]);
+    return await pool.query(sql, [`%${id_ami}%`]);
   } catch (error) {
     return error.message
   }
