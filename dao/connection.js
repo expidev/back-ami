@@ -17,12 +17,10 @@ if (process.env.NODE_ENV === 'development') {
 
     // Query function for executing queries
     async function query(sql, values) {
-        console.log("pass2")
         return new Promise((resolve, reject) => {
             pool.query(sql, values, (error, results, fields) => {
                 if (error) {
                     console.error('Error executing query:', { sql, values });
-                    console.log(error.message)
                     reject(error);
                 } else {
                     console.log('Executed query:', { sql, values });
@@ -32,7 +30,6 @@ if (process.env.NODE_ENV === 'development') {
         });
     }
 
-    // Export the pool and the query function for development environment
     module.exports = { query };
 } else {
     // For other environments (production, etc.)
@@ -44,8 +41,5 @@ if (process.env.NODE_ENV === 'development') {
         database: process.env.DB_NAME,
     });
 
-    console.log("pass3")
-
-    // Export the pool directly for other environments
     module.exports = pool;
 }

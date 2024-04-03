@@ -17,6 +17,17 @@ const storage = multer.diskStorage({
 // Configure multer to handle multiple file uploads
 const upload = multer({ storage: storage }).any();
 
+const getListByAmi = async (req, res) => {
+    try {
+        const id_ami = req.params.id_ami;
+        const result = await documentsModel.getListByAmi(id_ami);
+        res.status(200).json(result);
+    } catch (error) {
+        console.error("Error getting list by ami:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+};
+
 const uploadAndInsert = async (req, res) => {
     try {
         // Call the upload middleware to handle file upload
@@ -45,22 +56,16 @@ const uploadAndInsert = async (req, res) => {
                     new Date()
                 ]);
             }
-            await amiModel.updateDescription(description, id_ami);
+            const response = await amiModel.getAmiById(id_ami)
+            console.log(response)
+            if (response.length != 0)
+                await amiModel.updateDescription(description, id_ami);
+            else
+                await amiModel.addAmi([id_ami, req.user.id, description, new Date()])
             res.status(201).json({ message: "Files uploaded and inserted successfully" });
         });
     } catch (error) {
         console.error("Error uploading and inserting:", error);
-        res.status(500).json({ message: "Internal Server Error" });
-    }
-};
-
-const getListByAmi = async (req, res) => {
-    try {
-        const id_ami = req.params.id_ami;
-        const result = await documentsModel.getListByAmi(id_ami);
-        res.status(200).json(result);
-    } catch (error) {
-        console.error("Error getting list by ami:", error);
         res.status(500).json({ message: "Internal Server Error" });
     }
 };
