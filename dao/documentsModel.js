@@ -27,7 +27,6 @@ const getListByAmi = async (id_ami) => {
         SELECT * FROM fichier
         WHERE id_ami = ?
       `;
-
       return await pool.query(sql, [id_ami]);
     } catch (error) {
       return error.message

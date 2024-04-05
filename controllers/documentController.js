@@ -1,7 +1,7 @@
 const multer = require('multer');
 const documentsModel = require("../dao/documentsModel");
 const amiModel = require("../dao/amiModel")
-const { removeFile, downloadFile } = require('../helper');
+const { removeFile, downloadFile, downloadZipDocuments } = require('../helper');
 const path = require('path');
 
 // Use a dynamic insertId for each request
@@ -94,4 +94,22 @@ const downloadDocument = async (req, res) => {
     }
 };
 
-module.exports = { uploadAndInsert, getListByAmi, removeDocument, downloadDocument };
+const downloadZip = async (req, res) => {
+    try {
+        const { id_ami } = req.params;
+        const fileDataArray = await documentsModel.getListByAmi(id_ami)
+        console.log("pass")
+        await downloadZipDocuments(res, fileDataArray);
+    } catch (error) {
+        console.error("Error downloading the file:", error);
+        res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+};
+
+module.exports = { 
+    uploadAndInsert, 
+    getListByAmi, 
+    removeDocument, 
+    downloadDocument, 
+    downloadZip
+};

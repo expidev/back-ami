@@ -1,24 +1,51 @@
 const pool = require("./connection");
 
-const getList = async () => {
+const getListByPage = async (page) => {
     try {
+      const limit = 10;
+      const offset = (page - 1) * limit;
       const sql = `
         SELECT * FROM ami
+        LIMIT ? OFFSET ?
       `;
 
-      return await pool.query(sql);
+      return await pool.query(sql, [limit, offset]);
     } catch (error) {
       return error.message
     }
 }
 
+const countPage = async (page) => {
+  try {
+    const sql = `
+      SELECT COUNT(*) count FROM ami
+    `;
+
+    return await pool.query(sql);
+  } catch (error) {
+    return error.message
+  }
+}
+
 const getAmiById = async (id_ami) => {
+  try {
+    const sql = `
+      SELECT * FROM ami WHERE id_ami = ?
+    `;
+
+    return await pool.query(sql, [id_ami]);
+  } catch (error) {
+    return error.message
+  }
+}
+
+const searchAmiById = async (id_ami) => {
   try {
     const sql = `
       SELECT * FROM ami WHERE id_ami LIKE ?
     `;
 
-    return await pool.query(sql, [`%${id_ami}%`]);
+    return await pool.query(sql, [`%${id_ami || ''}%`]);
   } catch (error) {
     return error.message
   }
@@ -53,4 +80,4 @@ const addAmi = async (ami) => {
   }
 }
 
-module.exports =  { getList, getAmiById, updateDescription, addAmi };
+module.exports =  { getListByPage, countPage, getAmiById, searchAmiById, updateDescription, addAmi };

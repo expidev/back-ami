@@ -15,11 +15,17 @@ router.post('/ajout', authenticateAdmin, documentsController.uploadAndInsert);
 
 router.post('/', tokenController.requestDownload, visitorController.insert)
 
-router.get('/ami', authenticateAdmin, amiController.getList);
+router.get('/ami/', authenticateAdmin, amiController.countPage);
+
+router.get('/ami/page/:page', authenticateAdmin, amiController.getListByPage);
 
 router.get('/token/:token', tokenController.verifyToken);
 
 router.get('/ami/:id_ami', authenticateAdmin, amiController.getAmiById);
+
+router.get('/search/', authenticateAdmin, amiController.searchAmiById);
+
+router.get('/search/:id_ami', authenticateAdmin, amiController.searchAmiById);
 
 router.get('/visiteur/:id_visiteur', visitorController.getVisitorById)
 
@@ -36,5 +42,7 @@ router.delete('/superviseur/:id_superviseur', authenticateAdmin, superviseurCont
 router.post('/ami/email', authenticateAdmin, superviseurController.addSuperviseur);
 
 router.post('/download/', documentsController.downloadDocument)
+
+router.get('/download/:id_ami', documentsController.downloadZip)
 
 module.exports = router;

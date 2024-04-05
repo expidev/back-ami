@@ -21,6 +21,7 @@ if (process.env.NODE_ENV === 'development') {
             pool.query(sql, values, (error, results, fields) => {
                 if (error) {
                     console.error('Error executing query:', { sql, values });
+                    console.log(error.message)
                     reject(error);
                 } else {
                     console.log('Executed query:', { sql, values });
