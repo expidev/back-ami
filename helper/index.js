@@ -53,6 +53,9 @@ const downloadZipDocuments = async (res, fileDataArray) => {
     // Generate the zip file in memory
     const zipData = await zip.generateAsync({ type: 'nodebuffer' });
     
+    // Set CORS headers to allow requests from all origins
+    res.setHeader('Access-Control-Allow-Origin', '*');
+
     // Set headers for the response
     res.setHeader('Content-Disposition', 'attachment; filename=documents.zip');
     res.setHeader('Content-Type', 'application/zip');
@@ -67,5 +70,6 @@ const downloadZipDocuments = async (res, fileDataArray) => {
     res.status(500).send('Internal server error');
   }
 };
+
 
 module.exports = { removeFile, downloadFile, downloadZipDocuments };

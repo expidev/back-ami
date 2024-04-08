@@ -24,4 +24,33 @@ const getVisitorById = async (id_visiteur) => {
     return result;
 }
 
-module.exports = { insert, getVisitorById }
+const getVisitorByEmail = async (email) => {
+    const sql = `
+        SELECT * FROM visiteur
+        WHERE email_entreprise = ?
+    `;
+    const result = await pool.query(sql, [email]);
+    return result[0];
+}
+
+const getVisitorByToken = async (token) => {
+    const sql = `
+        SELECT * FROM visiteur v
+        INNER JOIN tokens t ON v.email_entreprise = t.email
+        WHERE t.token = ?
+    `;
+    const result = await pool.query(sql, [token]);
+    return result[0];
+}
+
+const updateCount = async (id, count) => {
+    const sql = `
+        UPDATE visiteur
+        SET count = ?
+        WHERE id_visiteur = ?
+    `;
+    const result = await pool.query(sql, [count + 1, id]);
+    return result[0];
+}
+
+module.exports = { insert, getVisitorById, getVisitorByEmail, getVisitorByToken, updateCount }

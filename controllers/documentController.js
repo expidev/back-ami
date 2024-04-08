@@ -74,7 +74,6 @@ const removeDocument = async (req, res) => {
     try {
         const { id_fichier, nom_fichier } = req.params;
         const filePath = path.join(__dirname,'..', 'uploads', 'dao_ami', nom_fichier);
-        console.log(filePath);
         removeFile(filePath);
         const result = await documentsModel.removeDocument(id_fichier);
         res.status(200).json({ success: true, message: `Document supprimé.`});
@@ -98,7 +97,6 @@ const downloadZip = async (req, res) => {
     try {
         const { id_ami } = req.params;
         const fileDataArray = await documentsModel.getListByAmi(id_ami)
-        console.log("pass")
         await downloadZipDocuments(res, fileDataArray);
     } catch (error) {
         console.error("Error downloading the file:", error);

@@ -9,18 +9,24 @@ const insert = async (req, res) => {
             email_entreprise, 
             telephone
         } = req.body;
-
-        const result= await visitorModel.insert([
-            nom, 
-            prenom, 
-            cin_nif, 
-            email_entreprise, 
-            telephone
-        ]);
+        let result;
+        const isPresent = await visitorModel.getVisitorByEmail(email_entreprise)
+        console.log(isPresent)
+        if (isPresent && isPresent.email_entreprise == email_entreprise) {
+            await visitorModel.updateCount(isPresent.id_visiteur, isPresent.count);
+        } else {
+            await visitorModel.insert([
+                nom, 
+                prenom, 
+                cin_nif, 
+                email_entreprise,
+                telephone
+            ]);
+        }
 
         res.status(201).json(result);
     } catch(err) {
-        console.log("error")
+        console.log(err.message)
         res.status(500)
     }
 }

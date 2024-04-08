@@ -7,10 +7,17 @@ const requestDownload = async (req, res) => {
     const token = uuidv4();
 
     try {
+      const isPresent = await Token.findByEmail(email_entreprise);
+
+      if (isPresent && isPresent.email == email_entreprise) {
+        await Token.update(isPresent.id, token)
+      } else {
         await Token.create(email_entreprise, token);
-        await sendEmailWithToken(email_entreprise, id_ami, token);
-        console.log("sent")
-        res.status(200).json({message: 'Download request submitted successfully'});
+      }
+
+      sendEmailWithToken(email_entreprise, id_ami, token);
+      res.status(200).json({message: 'Download request submitted successfully'});
+
     } catch (error) {
       console.error('Error submitting download request:', error);
       res.status(500).send({message: 'Internal server error'});

@@ -23,4 +23,25 @@ const findByToken = async (token) => {
     return result[0];
 }
 
-module.exports = { create, findByToken }
+const findByEmail = async (email) => {
+
+    const sql = `
+        SELECT * FROM tokens 
+        WHERE email = ?
+    `;
+    const result =  await pool.query(sql, [email])
+    return result[0];
+}
+
+const update = async (id, token) => {
+
+    const sql = `
+        UPDATE tokens
+        SET token = ?, created_at = ?
+        WHERE id = ?
+    `;
+    const result =  await pool.query(sql, [token, new Date(), id])
+    return result[0];
+}
+
+module.exports = { create, update, findByToken, findByEmail }
