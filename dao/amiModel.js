@@ -3,6 +3,7 @@ const pool = require("./connection");
 const getListByPage = async (page) => {
     try {
       const limit = 10;
+      console.log(page)
       const offset = (page - 1) * limit;
       const sql = `
         SELECT * FROM ami
@@ -31,6 +32,18 @@ const getAmiById = async (id_ami) => {
   try {
     const sql = `
       SELECT * FROM ami WHERE id_ami = ?
+    `;
+
+    return await pool.query(sql, [id_ami]);
+  } catch (error) {
+    return error.message
+  }
+}
+
+const removeAmiById = async (id_ami) => {
+  try {
+    const sql = `
+      DELETE FROM ami WHERE id_ami = ?
     `;
 
     return await pool.query(sql, [id_ami]);
@@ -80,4 +93,12 @@ const addAmi = async (ami) => {
   }
 }
 
-module.exports =  { getListByPage, countPage, getAmiById, searchAmiById, updateDescription, addAmi };
+module.exports =  { 
+  getListByPage, 
+  countPage, 
+  getAmiById, 
+  searchAmiById, 
+  updateDescription, 
+  addAmi,
+  removeAmiById
+};

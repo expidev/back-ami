@@ -2,7 +2,7 @@ const { v4: uuidv4 } = require('uuid');
 const Token = require('../dao/tokenModel');
 const { sendEmailWithToken } = require('../helper/emailService');
 
-const requestDownload = async (req, res) => {
+const requestDownload = async (req, res, next) => {
     const { id_ami, email_entreprise } = req.body;
     const token = uuidv4();
 
@@ -16,8 +16,7 @@ const requestDownload = async (req, res) => {
       }
 
       sendEmailWithToken(email_entreprise, id_ami, token);
-      res.status(200).json({message: 'Download request submitted successfully'});
-
+      next()
     } catch (error) {
       console.error('Error submitting download request:', error);
       res.status(500).send({message: 'Internal server error'});

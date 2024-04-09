@@ -11,7 +11,6 @@ const insert = async (req, res) => {
         } = req.body;
         let result;
         const isPresent = await visitorModel.getVisitorByEmail(email_entreprise)
-        console.log(isPresent)
         if (isPresent && isPresent.email_entreprise == email_entreprise) {
             await visitorModel.updateCount(isPresent.id_visiteur, isPresent.count);
         } else {

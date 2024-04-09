@@ -10,6 +10,8 @@ router.get('/ami/page/:page', authenticateAdmin, amiController.getListByPage);
 
 router.get('/ami/:id_ami', authenticateAdmin, amiController.getAmiById);
 
+router.delete('/ami/:id_ami', authenticateAdmin, amiController.removeAmiById);
+
 router.get('/search/', authenticateAdmin, amiController.searchAmiById);
 
 router.get('/search/:id_ami', authenticateAdmin, amiController.searchAmiById);

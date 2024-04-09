@@ -1,5 +1,7 @@
 const logModel = require("../dao/logModel");
 const visitorModel = require("../dao/visitorModel");
+const supervisorModel = require("../dao/superviseurModel");
+const { sendEmailToAdmin } = require("../helper/emailService");
 
 const insertLog = async (req, res, next) => {
     try {
@@ -8,7 +10,17 @@ const insertLog = async (req, res, next) => {
             token
         } = req.params;
         const visitor = await visitorModel.getVisitorByToken(token);
-        const response = await logModel.insertLog(id_ami, visitor.id_visiteur);
+        const hasLoggedBefore = await logModel.getLog(id_ami, visitor.id_visiteur)
+        
+        if (hasLoggedBefore && hasLoggedBefore.length != 0) {
+            await logModel.updateCount(id_ami, visitor.id_visiteur, visitor.count)
+        } else {
+            await logModel.insertLog(id_ami, visitor.id_visiteur);
+            const response = await supervisorModel.getSuperviseurByAmi(id_ami)
+            const ccEmail = response.map(visitor => visitor.email)
+            await sendEmailToAdmin(process.env.DEFAULT_LOG_EMAIL, ccEmail, {id_ami, ...visitor})
+        }
+
         next();
     } catch(err) {
         console.error(err.message);

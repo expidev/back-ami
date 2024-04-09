@@ -31,6 +31,16 @@ const getAmiById = async (req, res) => {
     }
 }
 
+const removeAmiById = async (req, res) => {
+    try {
+        await amiModel.removeAmiById(req.params.id_ami);
+        res.status(200).json({message: "successful deletion"});
+    } catch(err) {
+        console.log("error")
+        res.status(500)
+    }
+}
+
 const searchAmiById = async (req, res) => {
     try {
         const result= await amiModel.searchAmiById(req.params.id_ami);
@@ -41,4 +51,4 @@ const searchAmiById = async (req, res) => {
     }
 }
 
-module.exports = { getListByPage, getAmiById, searchAmiById, countPage }
+module.exports = { getListByPage, getAmiById, searchAmiById, removeAmiById, countPage }
