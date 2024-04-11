@@ -15,7 +15,7 @@ const sendEmailWithToken = async (to,id_ami, token) => {
       Bonjour
 
       Veuillez suivre le lien suivant pour continuer: 
-      http://localhost:5173/dao/${id_ami}/${token}
+      http://localhost:5173/dao/${encodeURIComponent(id_ami)}/${token}
       
       Cordialement,
     `;

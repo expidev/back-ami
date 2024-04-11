@@ -3,7 +3,6 @@ const pool = require("./connection");
 const getListByPage = async (page) => {
     try {
       const limit = 10;
-      console.log(page)
       const offset = (page - 1) * limit;
       const sql = `
         SELECT * FROM ami

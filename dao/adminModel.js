@@ -5,8 +5,6 @@ const getAdminByEmail = async (email) => {
     const sql = 'SELECT * FROM admin WHERE email = ?';
     const result = await pool.query(sql, [email]);
 
-    console.log(result)
-
     return result[0];
   }
   catch (error) {
