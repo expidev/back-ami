@@ -4,8 +4,8 @@ const { validateAjoutDossier } = require("../helper/validation");
 
 const router = require("express").Router();
 
-router.post('/', tokenController.requestDownload, visitorController.insert)
+router.post('/', validateAjoutDossier, tokenController.requestDownload, visitorController.insert)
 
-router.get('/visiteur/:id_visiteur', validateAjoutDossier,visitorController.getVisitorById)
+router.get('/visiteur/:id_visiteur',visitorController.getVisitorById)
 
 module.exports = router;
