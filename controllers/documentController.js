@@ -40,10 +40,6 @@ const uploadAndInsert = async (req, res) => {
                 return res.status(500).json({ message: "Internal Server Error" });
             }
 
-            if (!req.files || req.files.length === 0) {
-                return res.status(400).json({ message: "No file uploaded" });
-            }
-
             const files = req.files;
             const { id_ami, description } = req.body;
             for (const file of files) {
@@ -57,7 +53,6 @@ const uploadAndInsert = async (req, res) => {
                 ]);
             }
             const response = await amiModel.getAmiById(id_ami)
-            console.log(response)
             if (response.length != 0)
                 await amiModel.updateDescription(description, id_ami);
             else

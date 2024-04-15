@@ -10,7 +10,7 @@ const getListByPage = async (req, res) => {
         const result= await amiModel.getListByPage(page);
         res.status(200).json(result);
     } catch(err) {
-        console.log("error")
+        console.log(err.message)
         res.status(500)
     }
 }
@@ -20,7 +20,7 @@ const countPage = async (req, res) => {
         const result= await amiModel.countPage();
         res.status(200).json({ count: result[0].count});
     } catch(err) {
-        console.log("error")
+        console.log(err.message)
         res.status(500)
     }
 }
@@ -30,7 +30,7 @@ const getAmiById = async (req, res) => {
         const result= await amiModel.getAmiById(req.params.id_ami);
         res.status(200).json(result);
     } catch(err) {
-        console.log("error")
+        console.log(err.message)
         res.status(500)
     }
 }
@@ -59,7 +59,7 @@ const searchAmiById = async (req, res) => {
         const result= await amiModel.searchAmiById(req.params.id_ami);
         res.status(200).json(result);
     } catch(err) {
-        console.log("error")
+        console.log(err.message)
         res.status(500)
     }
 }

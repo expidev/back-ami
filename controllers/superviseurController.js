@@ -6,7 +6,7 @@ const getSuperviseurByAmi = async (req, res) => {
         const result = await superviseurModel.getSuperviseurByAmi(id_ami);
         res.status(200).json(result);
     } catch(err) {
-        console.log("error")
+        console.log(err.message)
         res.status(500)
     }
 }

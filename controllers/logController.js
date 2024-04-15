@@ -13,7 +13,7 @@ const insertLog = async (req, res, next) => {
         const hasLoggedBefore = await logModel.getLog(id_ami, visitor.id_visiteur)
         
         if (hasLoggedBefore && hasLoggedBefore.length != 0) {
-            await logModel.updateCount(id_ami, visitor.id_visiteur, visitor.count)
+            await logModel.updateCount(id_ami, visitor.id_visiteur, hasLoggedBefore.count)
         } else {
             await logModel.insertLog(id_ami, visitor.id_visiteur);
             const response = await supervisorModel.getSuperviseurByAmi(id_ami)
