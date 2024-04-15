@@ -1,4 +1,8 @@
+const path = require('path')
+
 const amiModel = require("../dao/amiModel");
+const documentModel = require("../dao/documentsModel");
+const { removeFiles } = require("../helper");
 
 const getListByPage = async (req, res) => {
     try {
@@ -33,10 +37,19 @@ const getAmiById = async (req, res) => {
 
 const removeAmiById = async (req, res) => {
     try {
-        await amiModel.removeAmiById(req.params.id_ami);
+        const id_ami = req.params.id_ami
+        const results = await documentModel.getListByAmi(id_ami)
+        if (results.length > 0)
+            removeFiles(
+                results.map(item => 
+                    path.join(__dirname,'..', 'uploads', 'dao_ami', item.nom_fichier)
+                )
+            )
+        await documentModel.removeDocumentsByAmi(id_ami)
+        await amiModel.removeAmiById(id_ami);
         res.status(200).json({message: "successful deletion"});
     } catch(err) {
-        console.log("error")
+        console.log(err.message)
         res.status(500)
     }
 }

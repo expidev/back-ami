@@ -2,6 +2,7 @@ const pool = require("./connection");
 
 const getAdminByEmail = async (email) => {
   try {
+
     const sql = 'SELECT * FROM admin WHERE email = ?';
     const result = await pool.query(sql, [email]);
 

@@ -46,4 +46,18 @@ const removeDocument = async (id_fichier) => {
   }
 }
 
-module.exports =  { insert, getListByAmi, removeDocument };
+const removeDocumentsByAmi = async (id_ami) => {
+  try {
+    const sql = `
+      DELETE FROM fichier
+      WHERE id_ami = ?
+    `;
+
+    return await pool.query(sql, [id_ami]);
+  } catch (error) {
+    return error.message
+  }
+}
+
+
+module.exports =  { insert, getListByAmi, removeDocument, removeDocumentsByAmi };

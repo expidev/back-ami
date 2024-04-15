@@ -42,5 +42,19 @@ if (process.env.NODE_ENV === 'development') {
         database: process.env.DB_NAME,
     });
 
-    module.exports = pool;
+    async function query(sql, values) {
+        return new Promise((resolve, reject) => {
+            pool.query(sql, values, (error, results, fields) => {
+                if (error) {
+                    console.error('Error executing query:', { sql, values });
+                    console.log(error.message)
+                    reject(error);
+                } else {
+                    resolve(results);
+                }
+            });
+        });
+    }
+
+    module.exports = { query };
 }

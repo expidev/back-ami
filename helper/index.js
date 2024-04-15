@@ -3,20 +3,22 @@ const fs = require('fs');
 const { Readable } = require('stream');
 const path = require('path');
 
-// Helper function to remove a file
 const removeFile = (filePath) => {
   try {
     if (fs.existsSync(filePath)) {
       // Delete the file
       fs.unlinkSync(filePath);
-      console.log(`File ${filePath} removed successfully`);
-    } else {
-      console.log(`File ${filePath} does not exist`);
     }
   } catch (error) {
     console.error(`Error removing file ${filePath}:`, error);
     throw error;
   }
+};
+
+const removeFiles = (filePaths) => {
+  filePaths.forEach(filePath => {
+    removeFile(filePath);
+  });
 };
 
 const downloadFile = async (res, type_fichier, nom_fichier) => {
@@ -72,4 +74,4 @@ const downloadZipDocuments = async (res, fileDataArray) => {
 };
 
 
-module.exports = { removeFile, downloadFile, downloadZipDocuments };
+module.exports = { removeFile, removeFiles, downloadFile, downloadZipDocuments };
