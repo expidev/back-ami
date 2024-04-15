@@ -11,7 +11,7 @@ const signin = async (req, res) => {
         }
         const passwordMatch = user.mot_de_passe === password;
         if (passwordMatch) {
-            const token = jwt.sign({ user: { email: user.email, id: user.id} }, process.env.JWT_SECRET_KEY);
+            const token = jwt.sign({ user: { email: user.email, id: user.id} }, process.env.JWT_SECRET_KEY, { expiresIn: '1d' });
             return res.json({ token });
         } else {
             return res.status(401).json({ message: 'Mot de passe invalide' });
