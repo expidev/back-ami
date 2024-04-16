@@ -12,12 +12,12 @@ const transporter = nodemailer.createTransport({
 const sendEmailWithToken = async (to,id_ami, token) => {
     const subject = 'Confirmation du demande des dossiers';
     const text = `
-      Bonjour
+  Bonjour,
 
-      Veuillez suivre le lien suivant pour continuer: 
-      http://localhost:5173/dao/${encodeURIComponent(id_ami)}/${token}
-      
-      Cordialement,
+  Veuillez suivre le lien suivant pour continuer: 
+  http://localhost:5173/dao/${encodeURIComponent(id_ami)}/${token}
+  
+  Cordialement,
     `;
   
     try {
