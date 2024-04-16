@@ -21,5 +21,15 @@ const signin = async (req, res) => {
     }
 }
 
+const logout = async (req, res) => {
+    try {
+        delete req.user;
 
-module.exports = { signin }
+        res.json({ message: "Logout successful" });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+
+module.exports = { signin, logout }
