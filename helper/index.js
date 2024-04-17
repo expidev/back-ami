@@ -8,6 +8,8 @@ const removeFile = (filePath) => {
     if (fs.existsSync(filePath)) {
       // Delete the file
       fs.unlinkSync(filePath);
+    } else {
+      throw Error("Error removing file.")
     }
   } catch (error) {
     console.error(`Error removing file ${filePath}:`, error);

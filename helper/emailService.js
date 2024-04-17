@@ -10,7 +10,7 @@ const transporter = nodemailer.createTransport({
 })
 
 const sendEmailWithToken = async (to,id_ami, token) => {
-    const subject = 'Confirmation du demande des dossiers';
+    const subject = 'Confirmation de la demande des dossiers';
     const text = `
   Bonjour,
 
@@ -27,7 +27,6 @@ const sendEmailWithToken = async (to,id_ami, token) => {
         subject: subject,
         text: text
       });
-      console.log('Email sent successfully');
     } catch (error) {
       console.error('Error sending email:', error);
     }
@@ -35,17 +34,20 @@ const sendEmailWithToken = async (to,id_ami, token) => {
 
   const sendEmailToAdmin = async (to, ccList, visitor) => {
     try {
-      const subject = `Un visiteur a téléchargé l' AMI Ref ${visitor.id_ami}`;
+      const subject = `Un visiteur a téléchargé l' AMI Réf. ${visitor.id_ami}`;
       const text = `
-  
-          Veuillez trouvez ci-dessous l'information du visiteur qui a téléchargé l'AMI ref ${visitor.id_ami}
-        
-          Nom de l'entreprise ou du Candidat: ${visitor.nom}
-          NIF ou CIN: ${visitor.cin_nif}
-          Email: ${visitor.email_entreprise}
-          Contact: ${visitor.telephone}
+      Bonjour,
 
+      Veuillez trouvez ci-dessous les informations du visiteur ayant téléchargé l'AMI Réf ${visitor.id_ami}
+      
+      Nom de l'entreprise ou du Candidat: ${visitor.nom} ${visitor.prenom ? visitor.prenom : ""}
+      NIF ou CIN: ${visitor.cin_nif}
+      Email: ${visitor.email_entreprise}
+      Contact: ${visitor.telephone}
+
+      Cordialement,
       `;
+
       await transporter.sendMail({
         from: '"noreply" <noreply@example.com>',
         to: to,

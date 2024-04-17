@@ -10,15 +10,20 @@ const insertLog = async (req, res, next) => {
             token
         } = req.params;
         const visitor = await visitorModel.getVisitorByToken(token);
-        const hasLoggedBefore = await logModel.getLog(id_ami, visitor.id_visiteur)
+        if (visitor) {
+            const hasLoggedBefore = await logModel.getLog(id_ami, visitor.id_visiteur)
         
-        if (hasLoggedBefore && hasLoggedBefore.length != 0) {
-            await logModel.updateCount(id_ami, visitor.id_visiteur, hasLoggedBefore.count)
+        
+            if (hasLoggedBefore && hasLoggedBefore.length != 0) {
+                await logModel.updateCount(id_ami, visitor.id_visiteur, hasLoggedBefore.count)
+            } else {
+                await logModel.insertLog(id_ami, visitor.id_visiteur);
+                const response = await supervisorModel.getSuperviseurByAmi(id_ami)
+                const ccEmail = response.map(visitor => visitor.email)
+                await sendEmailToAdmin(process.env.DEFAULT_LOG_EMAIL, ccEmail, {id_ami, ...visitor})
+            }
         } else {
-            await logModel.insertLog(id_ami, visitor.id_visiteur);
-            const response = await supervisorModel.getSuperviseurByAmi(id_ami)
-            const ccEmail = response.map(visitor => visitor.email)
-            await sendEmailToAdmin(process.env.DEFAULT_LOG_EMAIL, ccEmail, {id_ami, ...visitor})
+            throw Error("Visitor doesn't exist")
         }
 
         next();

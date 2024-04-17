@@ -1,8 +1,10 @@
 const path = require('path')
+const pool = require('../dao/connection')
 
 const amiModel = require("../dao/amiModel");
 const documentModel = require("../dao/documentsModel");
 const { removeFiles } = require("../helper");
+const { removeSuperviseurByAmi } = require('../dao/superviseurModel');
 
 const getListByPage = async (req, res) => {
     try {
@@ -35,21 +37,29 @@ const getAmiById = async (req, res) => {
     }
 }
 
+// remove the Ami, but remove all that connects to it, requires a transaction
 const removeAmiById = async (req, res) => {
     try {
+        await pool.query('START TRANSACTION');
+
         const id_ami = req.params.id_ami
         const results = await documentModel.getListByAmi(id_ami)
-        if (results.length > 0)
-            removeFiles(
-                results.map(item => 
-                    path.join(__dirname,'..', 'uploads', 'dao_ami', item.nom_fichier)
-                )
-            )
         await documentModel.removeDocumentsByAmi(id_ami)
+        await removeSuperviseurByAmi(id_ami);
         await amiModel.removeAmiById(id_ami);
+
+        if (results.length > 0)
+        removeFiles(
+            results.map(item => 
+                path.join(__dirname,'..', 'uploads', 'dao_ami', item.nom_fichier)
+            )
+        )
+        await pool.query('COMMIT')
         res.status(200).json({message: "successful deletion"});
-    } catch(err) {
+    } 
+    catch(err) {
         console.log(err.message)
+        await pool.query('ROLLBACK')
         res.status(500)
     }
 }

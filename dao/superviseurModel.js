@@ -38,8 +38,21 @@ const removeSuperviseur = async (id_superviseur) => {
   
       return await pool.query(sql, [id_superviseur]);
     } catch (error) {
-      return error.message
+      console.error(error.message)
     }
 }
 
-module.exports =  { getSuperviseurByAmi, removeSuperviseur, addSuperviseur };
+const removeSuperviseurByAmi = async (id_ami) => {
+  try {
+    const sql = `
+      DELETE FROM superviseur
+      WHERE id_ami = ?
+    `;
+
+    return await pool.query(sql, [id_ami]);
+  } catch (error) {
+    console.error(error.message)
+  }
+}
+
+module.exports =  { getSuperviseurByAmi, removeSuperviseur, removeSuperviseurByAmi, addSuperviseur };
