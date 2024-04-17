@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Apr 03, 2024 at 12:34 PM
+-- Generation Time: Apr 17, 2024 at 09:01 AM
 -- Server version: 5.7.31
 -- PHP Version: 7.2.33
 
@@ -65,20 +65,7 @@ CREATE TABLE IF NOT EXISTS `ami` (
 --
 
 INSERT INTO `ami` (`id_ami`, `id_admin`, `description`, `date_validation`) VALUES
-('3', 1, 'Do re mi fa', '2024-03-20'),
-('4', 1, '', '2024-03-13'),
-('5', 1, '', '2024-04-03'),
-('6', 1, '', '2024-04-03'),
-('9', 1, '', '2024-04-03'),
-('10', 1, '', '2024-04-03'),
-('11', 1, '', '2024-04-03'),
-('12', 1, '', '2024-04-03'),
-('13', 1, '', '2024-04-03'),
-('16', 1, '', '2024-04-03'),
-('20', 1, '', '2024-04-03'),
-('21', 1, '', '2024-04-03'),
-('25', 1, '', '2024-04-03'),
-('38', 1, '', '2024-04-03');
+('EFE/2025', 1, '', '2024-04-17');
 
 -- --------------------------------------------------------
 
@@ -92,54 +79,13 @@ CREATE TABLE IF NOT EXISTS `fichier` (
   `id_admin` int(11) DEFAULT NULL,
   `id_ami` varchar(70) DEFAULT NULL,
   `nom_fichier` varchar(255) DEFAULT NULL,
-  `description` varchar(100) DEFAULT NULL,
-  `type_fichier` varchar(50) DEFAULT NULL,
+  `type_fichier` varchar(100) DEFAULT NULL,
   `taille_fichier` varchar(20) DEFAULT NULL,
   `date_upload` date DEFAULT NULL,
   PRIMARY KEY (`id_fichier`),
   KEY `id_admin` (`id_admin`),
   KEY `id_ami` (`id_ami`)
-) ENGINE=MyISAM AUTO_INCREMENT=111 DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `fichier`
---
-
-INSERT INTO `fichier` (`id_fichier`, `id_admin`, `id_ami`, `nom_fichier`, `description`, `type_fichier`, `taille_fichier`, `date_upload`) VALUES
-(78, NULL, '3', '1711538902987_web-development-stack.png', NULL, 'image/png', '66858', '2024-03-27'),
-(100, 1, '12', '1712144304738_mm.PNG', NULL, 'image/png', '737217', '2024-04-03'),
-(101, 1, '13', '1712144445782_Sans titre.png', NULL, 'image/png', '59553', '2024-04-03'),
-(102, 1, '16', '1712144479120_Sans titre.png', NULL, 'image/png', '59553', '2024-04-03'),
-(99, 1, '12', '1712144304738_html CSS JS.jpg', NULL, 'image/jpeg', '6621', '2024-04-03'),
-(95, 1, '6', '1712143438268_html CSS JS.jpg', NULL, 'image/jpeg', '6621', '2024-04-03'),
-(96, 1, '9', '1712143980183_restful-product-service.jpg', NULL, 'image/jpeg', '37723', '2024-04-03'),
-(97, 1, '10', '1712144127138_images.jpg', NULL, 'image/jpeg', '4949', '2024-04-03'),
-(91, 1, '5', '1712135218231_ami.sql', NULL, 'application/octet-stream', '6727', '2024-04-03'),
-(98, 1, '11', '1712144264544_html CSS JS.jpg', NULL, 'image/jpeg', '6621', '2024-04-03'),
-(103, 1, '16', '1712144479121_Sans titre.png', NULL, 'image/png', '59553', '2024-04-03'),
-(104, 1, '20', '1712144835722_Sans titre.png', NULL, 'image/png', '59553', '2024-04-03'),
-(105, 1, '21', '1712144888703_Sans titre.png', NULL, 'image/png', '59553', '2024-04-03'),
-(106, 1, '25', '1712145650433_Cnd.drim', NULL, 'application/octet-stream', '38191', '2024-04-03');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `notification`
---
-
-DROP TABLE IF EXISTS `notification`;
-CREATE TABLE IF NOT EXISTS `notification` (
-  `id_notification` int(11) NOT NULL,
-  `id_ami` int(11) NOT NULL,
-  `id_admin` int(11) NOT NULL,
-  `id_superfiseur` int(11) NOT NULL,
-  `id_visiteur` int(11) NOT NULL,
-  `date_notification` date NOT NULL,
-  PRIMARY KEY (`id_notification`,`id_ami`,`id_admin`,`id_superfiseur`,`id_visiteur`),
-  KEY `FK_1` (`id_ami`,`id_admin`),
-  KEY `FK_2` (`id_superfiseur`),
-  KEY `FK_3` (`id_visiteur`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=184 DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -152,17 +98,18 @@ CREATE TABLE IF NOT EXISTS `superviseur` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nom` varchar(40) NOT NULL,
   `email` varchar(40) NOT NULL,
-  `id_ami` int(11) NOT NULL,
+  `id_ami` varchar(50) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `id_ami` (`id_ami`)
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=37 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `superviseur`
 --
 
 INSERT INTO `superviseur` (`id`, `nom`, `email`, `id_ami`) VALUES
-(7, 'Edustretch', 'example@example.com', 3);
+(36, 'English', 'englishp.mada@gmail.com', 'EFE/2025'),
+(35, 'Edustretch', 'har21055@byui.edu', 'EFE/2025');
 
 -- --------------------------------------------------------
 
@@ -172,16 +119,15 @@ INSERT INTO `superviseur` (`id`, `nom`, `email`, `id_ami`) VALUES
 
 DROP TABLE IF EXISTS `telechargement`;
 CREATE TABLE IF NOT EXISTS `telechargement` (
-  `id_telechargement` int(11) NOT NULL,
-  `id_ami` int(11) NOT NULL,
-  `id_admin` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_ami` varchar(50) NOT NULL,
   `id_visiteur` int(11) NOT NULL,
   `date_telechargement` date NOT NULL,
-  `adresse_ip` linestring NOT NULL,
-  PRIMARY KEY (`id_telechargement`,`id_ami`,`id_admin`,`id_visiteur`),
-  KEY `FK_1` (`id_ami`,`id_admin`),
+  `count` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`,`id_ami`,`id_visiteur`),
+  KEY `FK_1` (`id_ami`),
   KEY `FK_2` (`id_visiteur`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=85 DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -197,20 +143,7 @@ CREATE TABLE IF NOT EXISTS `tokens` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `tokens`
---
-
-INSERT INTO `tokens` (`id`, `token`, `email`, `created_at`) VALUES
-(13, '903173fa-c172-4a9b-b7d3-ab1d94ab2554', 'nasandratra.access4@gmail.com', '2024-04-02 07:19:53'),
-(12, '82b704ee-f4ba-4355-bab5-eb4e1351830c', 'nasandratra.access4@gmail.com', '2024-04-02 05:27:22'),
-(11, 'fed0b04c-eee5-411a-b08c-77f376599f39', 'nasandratra.access4@gmail.com', '2024-04-02 05:26:22'),
-(10, '3e32a353-9abd-450c-baab-3ffa2030a5fd', 'nasandratra.access4@gmail.com', '2024-04-02 05:25:31'),
-(9, 'a06e4810-0c08-4dbe-a912-bf70600397ea', 'nasandratra.access4@gmail.com', '2024-04-02 05:24:23'),
-(8, 'cfb0f544-1116-4e59-8e12-20ff8a67aca8', 'nasandratra.access4@gmail.com', '2024-04-02 05:20:34'),
-(7, 'ca06fe59-f05c-4e64-8963-a3442d9b8509', 'nasandratra.access4@gmail.com', '2024-03-28 11:26:53');
+) ENGINE=MyISAM AUTO_INCREMENT=27 DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -226,18 +159,16 @@ CREATE TABLE IF NOT EXISTS `visiteur` (
   `cin_nif` varchar(70) NOT NULL,
   `email_entreprise` varchar(50) NOT NULL,
   `telephone` varchar(20) NOT NULL,
+  `count` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id_visiteur`)
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=19 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `visiteur`
 --
 
-INSERT INTO `visiteur` (`id_visiteur`, `nom`, `prenom`, `cin_nif`, `email_entreprise`, `telephone`) VALUES
-(5, 'Lorem', '', '54654054045', 'example@example.com', '0320000000'),
-(6, 'EduStretch', '', '54654054045', 'nasandratra@ami.com', '0326212342'),
-(7, 'dfsfsdf', '', '1213445454', 'a@gmail.com', '0320000000'),
-(8, 'Edustretch', '', '1213445454', 'nasandratra.access4@gmail.com', '0320021211');
+INSERT INTO `visiteur` (`id_visiteur`, `nom`, `prenom`, `cin_nif`, `email_entreprise`, `telephone`, `count`) VALUES
+(18, 'Edustretch', 'Diris', '1213445454', 'nasandratra.access4@gmail.com', '0320000000', 0);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
