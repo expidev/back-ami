@@ -52,7 +52,7 @@ INSERT INTO `admin` (`id`, `nom`, `prenom`, `email`, `mot_de_passe`) VALUES
 
 DROP TABLE IF EXISTS `ami`;
 CREATE TABLE IF NOT EXISTS `ami` (
-  `id_ami` varchar(20) NOT NULL,
+  `id_ami` varchar(100) NOT NULL,
   `id_admin` int(11) NOT NULL,
   `description` varchar(300) NOT NULL,
   `date_validation` date NOT NULL,
