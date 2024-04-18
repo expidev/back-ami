@@ -1,6 +1,7 @@
 const multer = require('multer');
 const documentsModel = require("../dao/documentsModel");
 const amiModel = require("../dao/amiModel")
+const pool = require("../dao/connection")
 const { removeFile, downloadFile, downloadZipDocuments } = require('../helper');
 const path = require('path');
 
@@ -39,6 +40,8 @@ const uploadAndInsert = async (req, res) => {
 
             const files = req.files;
             const { id_ami, description } = req.body;
+            
+            await pool.query("START TRANSACTION")
             for (const file of files) {
                 await documentsModel.insert([
                     req.user.id,
@@ -54,10 +57,13 @@ const uploadAndInsert = async (req, res) => {
                 await amiModel.updateDescription(description, id_ami);
             else
                 await amiModel.addAmi([id_ami, req.user.id, description, new Date()])
+            
+            await pool.query("COMMIT")
             res.status(201).json({ message: "Files uploaded and inserted successfully" });
         });
     } catch (error) {
         console.error("Error uploading and inserting:", error);
+        await pool.query("ROLLBACK")
         res.status(500).json({ message: "Internal Server Error" });
     }
 };
