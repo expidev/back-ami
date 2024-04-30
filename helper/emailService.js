@@ -2,7 +2,8 @@ require('dotenv').config();
 const nodemailer = require('nodemailer');
 
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: process.env.SMTP_HOST,
+    port: process.env.SMTP_PORT,
     auth: {
         user: process.env.EMAIL,
         pass: process.env.PASS
@@ -15,14 +16,14 @@ const sendEmailWithToken = async (to,id_ami, token) => {
   Bonjour,
 
   Veuillez suivre le lien suivant pour continuer: 
-  http://localhost:5173/dao/${encodeURIComponent(id_ami)}/${token}
+  http://198.244.229.92/dao/${encodeURIComponent(id_ami)}/${token}
   
   Cordialement,
     `;
   
     try {
       await transporter.sendMail({
-        from: '"noreply" <noreply@example.com>',
+        from: '"FID" web@fid.mg',
         to: to,
         subject: subject,
         text: text
@@ -49,7 +50,7 @@ const sendEmailWithToken = async (to,id_ami, token) => {
       `;
 
       await transporter.sendMail({
-        from: '"noreply" <noreply@example.com>',
+        from: '"FID" <web@fid.mg>',
         to: to,
         cc: ccList,
         subject: subject,

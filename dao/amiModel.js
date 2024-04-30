@@ -71,7 +71,7 @@ const updateDescription = async (description, id_ami) => {
 
     return await pool.query(sql, [description, id_ami]);
   } catch (error) {
-    return error.message
+    console.log(error.message);
   }
 }
 
