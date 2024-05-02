@@ -16,7 +16,7 @@ const sendEmailWithToken = async (to,id_ami, token) => {
   Bonjour,
 
   Veuillez suivre le lien suivant pour continuer: 
-  http://198.244.229.92/dao/${encodeURIComponent(id_ami)}/${token}
+  ${process.env.FRONTEND}/dao/${encodeURIComponent(id_ami)}/${token}
   
   Cordialement,
     `;
@@ -50,7 +50,7 @@ const sendEmailWithToken = async (to,id_ami, token) => {
       `;
 
       await transporter.sendMail({
-        from: '"FID" <web@fid.mg>',
+        from: `"FID" <${process.env.NOTIFICATION_SENDER}>`,
         to: to,
         cc: ccList,
         subject: subject,
