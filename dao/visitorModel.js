@@ -8,8 +8,10 @@ const insert = async (visiteurInfo) => {
             prenom, 
             cin_nif, 
             email_entreprise, 
-            telephone
-        ) VALUES (?, ?, ?, ?, ?)
+            telephone1,
+            telephone2,
+            telephone3
+        ) VALUES (?, ?, ?, ?, ?, ?, ?)
     `;
     const result =  await pool.query(sql, [...visiteurInfo])
     return result.insertId;

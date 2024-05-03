@@ -7,7 +7,9 @@ const insert = async (req, res) => {
             prenom, 
             cin_nif, 
             email_entreprise, 
-            telephone
+            telephone1,
+            telephone2,
+            telephone3
         } = req.body;
         let result;
         const isPresent = await visitorModel.getVisitorByEmail(email_entreprise)
@@ -16,10 +18,12 @@ const insert = async (req, res) => {
         } else {
             await visitorModel.insert([
                 nom, 
-                prenom, 
+                prenom,
                 cin_nif, 
                 email_entreprise,
-                telephone
+                telephone1,
+                telephone2,
+                telephone3
             ]);
         }
 

@@ -20,10 +20,24 @@ const validateAjoutDossier = [
   body('prenom').optional().isString(),
   body('cin_nif').isString().notEmpty(),
   body('email_entreprise').isEmail(),
-  body('telephone').custom((value) => {
+  body('telephone1').custom((value) => {
     const telephoneRegex = /^[0+][0-9 ]{9,16}$/;
     if (!telephoneRegex.test(value)) {
-        throw new Error('Contact invalide.');
+        throw new Error('Numéro de téléphone invalide.');
+    }
+    return true;
+  }),
+  body('telephone2').custom((value) => {
+    const telephoneRegex = /^[0+][0-9 ]{9,16}$/;
+    if (value && !telephoneRegex.test(value)) {
+        throw new Error('Numéro de téléphone invalide.');
+    }
+    return true;
+  }),
+  body('telephone3').custom((value) => {
+    const telephoneRegex = /^[0+][0-9 ]{9,16}$/;
+    if (value && !telephoneRegex.test(value)) {
+        throw new Error('Numéro de téléphone invalide.');
     }
     return true;
   }),

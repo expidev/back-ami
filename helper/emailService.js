@@ -39,12 +39,12 @@ const sendEmailWithToken = async (to,id_ami, token) => {
       const text = `
       Bonjour,
 
-      Veuillez trouvez ci-dessous les informations du visiteur ayant téléchargé l'AMI Réf ${visitor.id_ami}
+      Veuillez trouvez ci-dessous les informations du visiteur ayant téléchargé l'appel d'offre ${visitor.id_ami}
       
       Nom de l'entreprise ou du Candidat: ${visitor.nom} ${visitor.prenom ? visitor.prenom : ""}
       NIF ou CIN: ${visitor.cin_nif}
       Email: ${visitor.email_entreprise}
-      Contact: ${visitor.telephone}
+      Contact: ${visitor.telephone1} ${visitor.telephone2 ? `/ ${visitor.telephone2}` : ""} ${visitor.telephone3 ? `/ ${visitor.telephone3}` : ""}
 
       Cordialement,
       `;
