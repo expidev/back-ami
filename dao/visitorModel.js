@@ -5,13 +5,14 @@ const insert = async (visiteurInfo) => {
     const sql = `
         INSERT INTO visiteur (
             nom, 
-            prenom, 
+            adresse,
+            type,
             cin_nif, 
             email_entreprise, 
             telephone1,
             telephone2,
             telephone3
-        ) VALUES (?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `;
     const result =  await pool.query(sql, [...visiteurInfo])
     return result.insertId;

@@ -17,8 +17,14 @@ const validateSignin = [
 
 const validateAjoutDossier = [
   body('nom').isString().notEmpty().withMessage("Entrez le nom."),
-  body('prenom').optional().isString(),
-  body('cin_nif').isString().notEmpty(),
+  body('adresse').isString().notEmpty().withMessage("Entrez l'adresse"),
+  body('type').custom((value) => {
+    if (value !== 'entreprise' && value !== 'individu') {
+      throw new Error("Le type doit être 'entreprise' ou 'individu'.");
+    }
+    return true;
+  }),
+  body('cin_nif').optional().isString().notEmpty(),
   body('email_entreprise').isEmail(),
   body('telephone1').custom((value) => {
     const telephoneRegex = /^[0+][0-9 ]{9,16}$/;

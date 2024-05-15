@@ -41,8 +41,10 @@ const sendEmailWithToken = async (to,id_ami, token) => {
 
       Veuillez trouvez ci-dessous les informations du visiteur ayant téléchargé l'appel d'offre ${visitor.id_ami}
       
-      Nom de l'entreprise ou du Candidat: ${visitor.nom} ${visitor.prenom ? visitor.prenom : ""}
-      NIF ou CIN: ${visitor.cin_nif}
+      Type: ${visitor.type}
+      Nom: ${visitor.nom}
+      Adresse: ${visitor.adresse}${visitor.cin_nif ? `
+      NIF ou CIN: ${visitor.cin_nif}` : ""}
       Email: ${visitor.email_entreprise}
       Contact: ${visitor.telephone1} ${visitor.telephone2 ? `/ ${visitor.telephone2}` : ""} ${visitor.telephone3 ? `/ ${visitor.telephone3}` : ""}
 

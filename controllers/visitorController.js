@@ -4,7 +4,8 @@ const insert = async (req, res) => {
     try {
         const {
             nom, 
-            prenom, 
+            adresse,
+            type,
             cin_nif, 
             email_entreprise, 
             telephone1,
@@ -18,7 +19,8 @@ const insert = async (req, res) => {
         } else {
             await visitorModel.insert([
                 nom, 
-                prenom,
+                adresse,
+                type,
                 cin_nif, 
                 email_entreprise,
                 telephone1,
