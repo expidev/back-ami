@@ -5,8 +5,10 @@ const insert = async (req, res) => {
         const {
             nom, 
             adresse,
+            id_region,
+            id_district,
             type,
-            cin_nif, 
+            cin_nif,
             email_entreprise, 
             telephone1,
             telephone2,
@@ -15,11 +17,28 @@ const insert = async (req, res) => {
         let result;
         const isPresent = await visitorModel.getVisitorByEmail(email_entreprise)
         if (isPresent && isPresent.email_entreprise == email_entreprise) {
-            await visitorModel.updateCount(isPresent.id_visiteur, isPresent.count);
+            await visitorModel.update(
+                [   
+                    nom, 
+                    adresse,
+                    parseInt(id_region),
+                    parseInt(id_district),
+                    type,
+                    cin_nif, 
+                    email_entreprise,
+                    telephone1,
+                    telephone2,
+                    telephone3
+                ],
+                isPresent.id_visiteur, 
+                isPresent.count
+            );
         } else {
             await visitorModel.insert([
                 nom, 
                 adresse,
+                parseInt(id_region),
+                parseInt(id_district),
                 type,
                 cin_nif, 
                 email_entreprise,

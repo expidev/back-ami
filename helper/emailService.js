@@ -43,6 +43,8 @@ const sendEmailWithToken = async (to,id_ami, token) => {
       
       Type: ${visitor.type}
       Nom: ${visitor.nom}
+      Région: ${visitor.nom_region}
+      District: ${visitor.nom_district}
       Adresse: ${visitor.adresse}${visitor.cin_nif ? `
       NIF ou CIN: ${visitor.cin_nif}` : ""}
       Email: ${visitor.email_entreprise}
