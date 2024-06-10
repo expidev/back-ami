@@ -1,4 +1,4 @@
-const visitorModel = require("../dao/visitorModel");
+const visitorModel = require("../models/visitorModel");
 
 const insert = async (req, res) => {
     try {
@@ -6,26 +6,25 @@ const insert = async (req, res) => {
             nom, 
             adresse,
             id_region,
-            id_district,
             type,
             cin_nif,
-            email_entreprise, 
+            email, 
             telephone1,
             telephone2,
             telephone3
         } = req.body;
+
         let result;
-        const isPresent = await visitorModel.getVisitorByEmail(email_entreprise)
-        if (isPresent && isPresent.email_entreprise == email_entreprise) {
+        const isPresent = await visitorModel.getVisitorByEmail(email)
+        if (isPresent && isPresent.email == email) {
             await visitorModel.update(
                 [   
                     nom, 
                     adresse,
                     parseInt(id_region),
-                    parseInt(id_district),
                     type,
                     cin_nif, 
-                    email_entreprise,
+                    email,
                     telephone1,
                     telephone2,
                     telephone3
@@ -38,10 +37,9 @@ const insert = async (req, res) => {
                 nom, 
                 adresse,
                 parseInt(id_region),
-                parseInt(id_district),
                 type,
                 cin_nif, 
-                email_entreprise,
+                email,
                 telephone1,
                 telephone2,
                 telephone3

@@ -1,17 +1,17 @@
-const pool = require("./connection");
+const pool = require("../database/connection");
 
 const countDownloadByAmi = async (ref_ami, startDate, endDate) => {
   try {
     let sql = `
-      SELECT COUNT(id_ami) AS count FROM telechargement
+      SELECT COUNT(ref_ami) AS count FROM dao_telechargement
       WHERE date_telechargement >= ? AND date_telechargement <= ?
     `;
     const params = [startDate, endDate];
 
     if (ref_ami && ref_ami !== "Tout") {
       sql = `
-        SELECT COUNT(id_ami) AS count FROM telechargement
-        WHERE id_ami = ? AND date_telechargement >= ? AND date_telechargement <= ?
+        SELECT COUNT(ref_ami) AS count FROM dao_telechargement
+        WHERE ref_ami = ? AND date_telechargement >= ? AND date_telechargement <= ?
       `;
       params.unshift(ref_ami);
     }
@@ -26,17 +26,17 @@ const countDownloadByAmi = async (ref_ami, startDate, endDate) => {
 const countEntrepriseDownloadByAmi = async (ref_ami, startDate, endDate) => {
   try {
     let sql = `
-      SELECT COUNT(t.id_ami) AS count FROM telechargement t
-      INNER JOIN visiteur v ON v.id_visiteur = t.id_visiteur
+      SELECT COUNT(t.ref_ami) AS count FROM dao_telechargement t
+      INNER JOIN dao_visiteur v ON v.id_visiteur = t.id_visiteur
       WHERE v.type = "entreprise" AND t.date_telechargement >= ? AND t.date_telechargement <= ?
     `;
     const params = [startDate, endDate];
 
     if (ref_ami && ref_ami !== "Tout") {
       sql = `
-        SELECT COUNT(t.id_ami) AS count FROM telechargement t
-        INNER JOIN visiteur v ON v.id_visiteur = t.id_visiteur
-        WHERE t.id_ami = ? AND v.type = "entreprise" AND t.date_telechargement >= ? AND t.date_telechargement <= ?
+        SELECT COUNT(ref_ami) AS count FROM dao_telechargement t
+        INNER JOIN dao_visiteur v ON v.id_visiteur = t.id_visiteur
+        WHERE t.ref_ami = ? AND v.type = "entreprise" AND t.date_telechargement >= ? AND t.date_telechargement <= ?
       `;
       params.unshift(ref_ami);
     }
@@ -51,17 +51,17 @@ const countEntrepriseDownloadByAmi = async (ref_ami, startDate, endDate) => {
 const countIndividuDownloadByAmi = async (ref_ami, startDate, endDate) => {
   try {
     let sql = `
-      SELECT COUNT(t.id_ami) AS count FROM telechargement t
-      INNER JOIN visiteur v ON v.id_visiteur = t.id_visiteur
+      SELECT COUNT(t.ref_ami) AS count FROM dao_telechargement t
+      INNER JOIN dao_visiteur v ON v.id_visiteur = t.id_visiteur
       WHERE v.type = "individu" AND t.date_telechargement >= ? AND t.date_telechargement <= ?
     `;
     const params = [startDate, endDate];
 
     if (ref_ami && ref_ami !== "Tout") {
       sql = `
-        SELECT COUNT(t.id_ami) AS count FROM telechargement t
-        INNER JOIN visiteur v ON v.id_visiteur = t.id_visiteur
-        WHERE t.id_ami = ? AND v.type = "individu" AND t.date_telechargement >= ? AND t.date_telechargement <= ?
+        SELECT COUNT(t.ref_ami) AS count FROM dao_telechargement t
+        INNER JOIN dao_visiteur v ON v.id_visiteur = t.id_visiteur
+        WHERE t.ref_ami = ? AND v.type = "individu" AND t.date_telechargement >= ? AND t.date_telechargement <= ?
       `;
       params.unshift(ref_ami);
     }
@@ -73,29 +73,27 @@ const countIndividuDownloadByAmi = async (ref_ami, startDate, endDate) => {
   }
 }
 
-const countDownloadsByDistrict = async (ref_ami, startDate, endDate) => {
+const countDownloadsByRegion = async (ref_ami, startDate, endDate) => {
   try {
     let sql = `
-      SELECT d.nom_district, r.nom_region, COUNT(t.id_ami) as count
-      FROM telechargement t
-      INNER JOIN visiteur v ON v.id_visiteur = t.id_visiteur
-      INNER JOIN district d ON v.id_district = d.id_district
-      INNER JOIN region r ON d.id_region = r.id_region
+      SELECT r.nom_region, COUNT(t.ref_ami) as count
+      FROM dao_telechargement t
+      INNER JOIN dao_visiteur v ON v.id_visiteur = t.id_visiteur
+      INNER JOIN region r ON v.id_region = r.id_region
       WHERE t.date_telechargement >= ? AND t.date_telechargement <= ?
-      GROUP BY d.nom_district;
+      GROUP BY r.nom_region;
       
     `;
     const params = [startDate, endDate];
 
     if (ref_ami && ref_ami !== "Tout") {
       sql = `
-      SELECT d.nom_district, r.nom_region, COUNT(t.id_ami) as count
-      FROM telechargement t
-      INNER JOIN visiteur v ON v.id_visiteur = t.id_visiteur
-      INNER JOIN district d ON v.id_district = d.id_district
-      INNER JOIN region r ON  d.id_region = r.id_region 
-      WHERE t.id_ami = ? AND t.date_telechargement >= ? AND t.date_telechargement <= ?
-      GROUP BY d.nom_district
+      SELECT r.nom_region, COUNT(t.id_ami) as count
+      FROM dao_telechargement t
+      INNER JOIN dao_visiteur v ON v.id_visiteur = t.id_visiteur
+      INNER JOIN region r ON  v.id_region = r.id_region 
+      WHERE t.ref_ami = ? AND t.date_telechargement >= ? AND t.date_telechargement <= ?
+      GROUP BY r.nom_region
       `;
       params.unshift(ref_ami);
     }
@@ -111,5 +109,5 @@ module.exports = {
   countDownloadByAmi,
   countEntrepriseDownloadByAmi,
   countIndividuDownloadByAmi,
-  countDownloadsByDistrict 
+  countDownloadsByRegion
 }

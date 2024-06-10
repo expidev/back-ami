@@ -1,4 +1,4 @@
-const regionsModel = require("../dao/regionsModel");
+const regionsModel = require("../models/regionsModel");
 
 const getRegions = async (req, res) => {
     try {

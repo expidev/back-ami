@@ -1,10 +1,10 @@
 const path = require('path')
-const pool = require('../dao/connection')
+const pool = require('../database/connection')
 
-const amiModel = require("../dao/amiModel");
-const documentModel = require("../dao/documentsModel");
-const { removeFiles } = require("../helper");
-const { removeSuperviseurByAmi } = require('../dao/superviseurModel');
+const amiModel = require("../models/amiModel");
+const documentModel = require("../models/documentsModel");
+const { removeFiles } = require("../utility");
+const { removeSuperviseurByAmi } = require('../models/superviseurModel');
 
 const getListByPage = async (req, res) => {
     try {
@@ -27,9 +27,9 @@ const countPage = async (req, res) => {
     }
 }
 
-const getAmiById = async (req, res) => {
+const getAmiByRef = async (req, res) => {
     try {
-        const result= await amiModel.getAmiById(req.params.id_ami);
+        const result= await amiModel.getAmiByRef(req.params.ref_ami);
         res.status(200).json(result);
     } catch(err) {
         console.log(err.message)
@@ -38,15 +38,15 @@ const getAmiById = async (req, res) => {
 }
 
 // remove the Ami, but remove all that connects to it, requires a transaction
-const removeAmiById = async (req, res) => {
+const removeAmiByRef = async (req, res) => {
     try {
         await pool.query('START TRANSACTION');
 
-        const id_ami = req.params.id_ami
-        const results = await documentModel.getListByAmi(id_ami)
-        await documentModel.removeDocumentsByAmi(id_ami)
-        await removeSuperviseurByAmi(id_ami);
-        await amiModel.removeAmiById(id_ami);
+        const { ref_ami } = req.params
+        const results = await documentModel.getListByAmi(ref_ami)
+        await documentModel.removeDocumentsByRefAmi(ref_ami)
+        await removeSuperviseurByAmi(ref_ami);//
+        await amiModel.removeAmiByRef(ref_ami);
 
         if (results.length > 0)
         removeFiles(
@@ -64,9 +64,10 @@ const removeAmiById = async (req, res) => {
     }
 }
 
-const searchAmiById = async (req, res) => {
+const searchAmiByRef = async (req, res) => {
     try {
-        const result= await amiModel.searchAmiById(req.params.id_ami);
+        const { ref_ami } = req.params;
+        const result= await amiModel.searchAmiByRef(ref_ami);
         res.status(200).json(result);
     } catch(err) {
         console.log(err.message)
@@ -74,4 +75,4 @@ const searchAmiById = async (req, res) => {
     }
 }
 
-module.exports = { getListByPage, getAmiById, searchAmiById, removeAmiById, countPage }
+module.exports = { getListByPage, getAmiByRef, searchAmiByRef, removeAmiByRef, countPage }

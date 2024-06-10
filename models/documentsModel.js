@@ -1,12 +1,12 @@
-const pool = require("./connection");
+const pool = require("../database/connection");
 
 
 const insert = async (document_info) => {
     try {
       const sql = `
-        INSERT INTO fichier (
+        INSERT INTO dao_fichier (
             id_admin, 
-            id_ami, 
+            ref_ami, 
             nom_fichier, 
             type_fichier, 
             taille_fichier, 
@@ -21,13 +21,13 @@ const insert = async (document_info) => {
     }
 }
 
-const getListByAmi = async (id_ami) => {
+const getListByAmi = async (ref_ami) => {
     try {
       const sql = `
-        SELECT * FROM fichier
-        WHERE id_ami = ?
+        SELECT * FROM dao_fichier
+        WHERE ref_ami = ?
       `;
-      return await pool.query(sql, [id_ami]);
+      return await pool.query(sql, [ref_ami]);
     } catch (error) {
       return error.message
     }
@@ -36,7 +36,7 @@ const getListByAmi = async (id_ami) => {
 const removeDocument = async (id_fichier) => {
   try {
     const sql = `
-      DELETE FROM fichier
+      DELETE FROM dao_fichier
       WHERE id_fichier = ?
     `;
 
@@ -46,18 +46,19 @@ const removeDocument = async (id_fichier) => {
   }
 }
 
-const removeDocumentsByAmi = async (id_ami) => {
+// remove all documents by the id_ami
+const removeDocumentsByRefAmi = async (ref_ami) => {
   try {
     const sql = `
-      DELETE FROM fichier
-      WHERE id_ami = ?
+      DELETE FROM dao_fichier
+      WHERE ref_ami = ?
     `;
 
-    return await pool.query(sql, [id_ami]);
+    return await pool.query(sql, [ref_ami]);
   } catch (error) {
     return error.message
   }
 }
 
 
-module.exports =  { insert, getListByAmi, removeDocument, removeDocumentsByAmi };
+module.exports =  { insert, getListByAmi, removeDocument, removeDocumentsByRefAmi };

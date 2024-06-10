@@ -1,8 +1,8 @@
 const multer = require('multer');
-const documentsModel = require("../dao/documentsModel");
-const amiModel = require("../dao/amiModel")
-const pool = require("../dao/connection")
-const { removeFile, downloadFile, downloadZipDocuments } = require('../helper');
+const documentsModel = require("../models/documentsModel");
+const amiModel = require("../models/amiModel")
+const pool = require("../database/connection")
+const { removeFile, downloadFile, downloadZipDocuments } = require('../utility');
 const path = require('path');
 
 // change the destination and the filename of the file upload
@@ -15,55 +15,84 @@ const storage = multer.diskStorage({
     }
 });
 
-// Configure multer to handle multiple file uploads
-const upload = multer({ storage: storage }).any();
+const allowedTypes = [
+    'image/jpeg',
+    'image/png',
+    'application/pdf',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+];
 
-const getListByAmi = async (req, res) => {
-    try {
-        const id_ami = req.params.id_ami;
-        const result = await documentsModel.getListByAmi(id_ami);
-        res.status(200).json(result);
-    } catch (error) {
-        console.error("Error getting list by ami:", error);
-        res.status(500).json({ message: "Internal Server Error" });
+// Validate file type
+const fileFilter = function (req, file, cb) {
+    if (allowedTypes.includes(file.mimetype)) {
+        cb(null, true);
+    } else {
+        cb(new multer.MulterError('LIMIT_UNEXPECTED_FILE', file), false);
     }
 };
 
+// Configure multer to handle multiple file uploads
+const upload = multer({ 
+    storage: storage,
+    fileFilter: fileFilter,
+    limits: { fileSize: 3 * 1024 * 1024 } // 3MB file size limit
+}).any("");
+
 const uploadAndInsert = async (req, res) => {
-    try {
-        upload(req, res, async function (err) {
-            if (err instanceof multer.MulterError) {
-                return res.status(400).json({ message: "File upload error" });
-            } else if (err) {
-                return res.status(500).json({ message: "Internal Server Error" });
+    upload(req, res, async function (err) {
+        if (err instanceof multer.MulterError) {
+            return res.status(400).json({ message: "File upload error" });
+        } else if (err) {
+            return res.status(500).json({ message: "Internal Server Error" });
+        }
+
+        const files = req.files;
+        const { ref_ami, description, action } = req.body;
+        console.log(req.body)
+        try {
+            await pool.query("START TRANSACTION");
+            const response = await amiModel.getAmiByRef(ref_ami);
+            if (action === "update") {
+                await amiModel.updateDescription(description, ref_ami);
+            } else {
+                if (response.length !== 0) {
+                    return res.status(409).json({ message: 'Duplicate Ref. AMI' });
+                }
+                await amiModel.addAmi([ref_ami, req.user.id, description, new Date()]);
+            }
+            
+            if (files && files.length > 0) {
+                for (const file of files) {
+                    await documentsModel.insert([
+                        req.user.id,
+                        ref_ami,
+                        file.filename,
+                        file.mimetype,
+                        file.size,
+                        new Date()
+                    ]);
+                }
             }
 
-            const files = req.files;
-            const { id_ami, description } = req.body;
-            
-            await pool.query("START TRANSACTION")
-            for (const file of files) {
-                await documentsModel.insert([
-                    req.user.id,
-                    id_ami,
-                    file.filename,
-                    file.mimetype,
-                    file.size,
-                    new Date()
-                ]);
-            }
-            const response = await amiModel.getAmiById(id_ami)
-            if (response.length != 0)
-                await amiModel.updateDescription(description, id_ami);
-            else
-                await amiModel.addAmi([id_ami, req.user.id, description, new Date()])
-            
-            await pool.query("COMMIT")
+            await pool.query("COMMIT");
             res.status(201).json({ message: "Files uploaded and inserted successfully" });
-        });
+        } catch (error) {
+            console.error("Error uploading and inserting:", error);
+            await pool.query("ROLLBACK");
+            res.status(500).json({ message: "Internal Server Error" });
+        }
+    });
+};
+
+
+const getListByAmi = async (req, res) => {
+    try {
+        const ref_ami = req.params.ref_ami;
+        const result = await documentsModel.getListByAmi(ref_ami);
+        res.status(200).json(result);
     } catch (error) {
-        console.error("Error uploading and inserting:", error);
-        await pool.query("ROLLBACK")
+        console.error("Error getting list by ami:", error);
         res.status(500).json({ message: "Internal Server Error" });
     }
 };
@@ -73,7 +102,7 @@ const removeDocument = async (req, res) => {
         const { id_fichier, nom_fichier } = req.params;
         const filePath = path.join(__dirname,'..', 'uploads', 'dao_ami', nom_fichier);
         removeFile(filePath);
-        const result = await documentsModel.removeDocument(id_fichier);
+        await documentsModel.removeDocument(id_fichier);
         res.status(200).json({ success: true, message: `Document supprimé.`});
     } catch (error) {
         console.error("Error getting list by ami:", error);
@@ -93,8 +122,8 @@ const downloadDocument = async (req, res) => {
 
 const downloadZip = async (req, res) => {
     try {
-        const { id_ami } = req.params;
-        const fileDataArray = await documentsModel.getListByAmi(id_ami)
+        const { ref_ami } = req.params;
+        const fileDataArray = await documentsModel.getListByAmi(ref_ami)
         await downloadZipDocuments(res, fileDataArray);
     } catch (error) {
         console.error("Error downloading the file:", error);
@@ -106,6 +135,6 @@ module.exports = {
     uploadAndInsert, 
     getListByAmi, 
     removeDocument, 
-    downloadDocument, 
+    downloadDocument,
     downloadZip
 };

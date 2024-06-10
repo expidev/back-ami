@@ -1,12 +1,13 @@
 require('dotenv').config();
 const nodemailer = require('nodemailer');
+const { config } = require('../config/config');
 
 const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: process.env.SMTP_PORT,
+    host: config.SMTP_HOST,
+    port: config.SMTP_PORT,
     auth: {
-        user: process.env.EMAIL,
-        pass: process.env.PASS
+        user: config.EMAIL,
+        pass: config.PASS
     }
 })
 
@@ -16,7 +17,7 @@ const sendEmailWithToken = async (to,id_ami, token) => {
   Bonjour,
 
   Veuillez suivre le lien suivant pour continuer: 
-  ${process.env.FRONTEND}/dao/${encodeURIComponent(id_ami)}/${token}
+  ${config.FRONTEND}/dao/${encodeURIComponent(id_ami)}/${token}
   
   Cordialement,
     `;
@@ -35,7 +36,7 @@ const sendEmailWithToken = async (to,id_ami, token) => {
 
   const sendEmailToAdmin = async (to, ccList, visitor) => {
     try {
-      const subject = `Un visiteur a téléchargé l' AMI Réf. ${visitor.id_ami}`;
+      const subject = `Un visiteur a téléchargé l' AMI Réf. ${visitor.ref_ami}`;
       const text = `
       Bonjour,
 
@@ -44,17 +45,16 @@ const sendEmailWithToken = async (to,id_ami, token) => {
       Type: ${visitor.type}
       Nom: ${visitor.nom}
       Région: ${visitor.nom_region}
-      District: ${visitor.nom_district}
       Adresse: ${visitor.adresse}${visitor.cin_nif ? `
       NIF ou CIN: ${visitor.cin_nif}` : ""}
-      Email: ${visitor.email_entreprise}
+      Email: ${visitor.email}
       Contact: ${visitor.telephone1} ${visitor.telephone2 ? `/ ${visitor.telephone2}` : ""} ${visitor.telephone3 ? `/ ${visitor.telephone3}` : ""}
 
       Cordialement,
       `;
 
       await transporter.sendMail({
-        from: `"FID" <${process.env.NOTIFICATION_SENDER}>`,
+        from: `"FID" <${config.NOTIFICATION_SENDER}>`,
         to: to,
         cc: ccList,
         subject: subject,

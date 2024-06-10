@@ -1,21 +1,21 @@
 const { v4: uuidv4 } = require('uuid');
-const Token = require('../dao/tokenModel');
-const { sendEmailWithToken } = require('../helper/emailService');
+const Token = require('../models/tokenModel');
+const { sendEmailWithToken } = require('../utility/emailService');
 
 const requestDownload = async (req, res, next) => {
-    const { id_ami, email_entreprise } = req.body;
+    const { ref_ami, email } = req.body;
     const token = uuidv4();
 
     try {
-      const isPresent = await Token.findByEmail(email_entreprise);
-
-      if (isPresent && isPresent.email == email_entreprise) {
+      const isPresent = await Token.findByEmail(email);
+      // if visitor is already existed, update the token
+      if (isPresent && isPresent.email == email) {
         await Token.update(isPresent.id, token)
       } else {
-        await Token.create(email_entreprise, token);
+        await Token.create(email, token);
       }
 
-      sendEmailWithToken(email_entreprise, id_ami, token);
+      sendEmailWithToken(email, ref_ami, token);
       next()
     } catch (error) {
       console.error('Error submitting download request:', error);

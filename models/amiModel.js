@@ -1,11 +1,11 @@
-const pool = require("./connection");
+const pool = require("../database/connection");
 
 const getListByPage = async (page) => {
     try {
       const limit = 10;
       const offset = (page - 1) * limit;
       const sql = `
-        SELECT * FROM ami
+        SELECT * FROM dao_ami
         LIMIT ? OFFSET ?
       `;
 
@@ -18,7 +18,7 @@ const getListByPage = async (page) => {
 const countPage = async (page) => {
   try {
     const sql = `
-      SELECT COUNT(*) count FROM ami
+      SELECT COUNT(*) count FROM dao_ami
     `;
 
     return await pool.query(sql);
@@ -27,49 +27,49 @@ const countPage = async (page) => {
   }
 }
 
-const getAmiById = async (id_ami) => {
+const getAmiByRef = async (ref_ami) => {
   try {
     const sql = `
-      SELECT * FROM ami WHERE id_ami = ?
+      SELECT * FROM dao_ami WHERE ref_ami = ?
     `;
 
-    return await pool.query(sql, [id_ami]);
+    return await pool.query(sql, [ref_ami]);
   } catch (error) {
     return error.message
   }
 }
 
-const removeAmiById = async (id_ami) => {
+const removeAmiByRef = async (ref_ami) => {
   try {
     const sql = `
-      DELETE FROM ami WHERE id_ami = ?
+      DELETE FROM dao_ami WHERE ref_ami = ?
     `;
 
-    return await pool.query(sql, [id_ami]);
+    return await pool.query(sql, [ref_ami]);
   } catch (error) {
     return error.message
   }
 }
 
-const searchAmiById = async (id_ami) => {
+const searchAmiByRef = async (ref_ami) => {
   try {
     const sql = `
-      SELECT * FROM ami WHERE id_ami LIKE ?
+      SELECT * FROM dao_ami WHERE ref_ami LIKE ?
     `;
 
-    return await pool.query(sql, [`%${id_ami || ''}%`]);
+    return await pool.query(sql, [`%${ref_ami || ''}%`]);
   } catch (error) {
     return error.message
   }
 }
 
-const updateDescription = async (description, id_ami) => {
+const updateDescription = async (description, ref_ami) => {
   try {
     const sql = `
-      UPDATE ami SET description = ? WHERE id_ami = ?
+      UPDATE dao_ami SET description = ? WHERE ref_ami = ?
     `;
 
-    return await pool.query(sql, [description, id_ami]);
+    return await pool.query(sql, [description, ref_ami]);
   } catch (error) {
     console.log(error.message);
   }
@@ -78,11 +78,11 @@ const updateDescription = async (description, id_ami) => {
 const addAmi = async (ami) => {
   try {
     const sql = `
-      INSERT INTO ami (
-        id_ami,
+      INSERT INTO dao_ami (
+        ref_ami,
         id_admin,
         description,
-        date_validation
+        date_creation
       ) VALUES (?, ?, ?, ?)
     `;
 
@@ -95,9 +95,9 @@ const addAmi = async (ami) => {
 module.exports =  { 
   getListByPage, 
   countPage, 
-  getAmiById, 
-  searchAmiById, 
+  getAmiByRef, 
+  searchAmiByRef, 
   updateDescription, 
   addAmi,
-  removeAmiById
+  removeAmiByRef
 };

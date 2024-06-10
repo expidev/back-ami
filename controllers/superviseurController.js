@@ -1,9 +1,9 @@
-const superviseurModel = require("../dao/superviseurModel");
+const superviseurModel = require("../models/superviseurModel");
 
 const getSuperviseurByAmi = async (req, res) => {
     try {
-        const { id_ami } = req.params;
-        const result = await superviseurModel.getSuperviseurByAmi(id_ami);
+        const { ref_ami } = req.params;
+        const result = await superviseurModel.getSuperviseurByAmi(ref_ami);
         res.status(200).json(result);
     } catch(err) {
         console.log(err.message)
@@ -13,12 +13,12 @@ const getSuperviseurByAmi = async (req, res) => {
 
 const addSuperviseur = async (req, res) => {
     try {
-        const { id_ami, nom, email } = req.body;
-        const isPresent = await superviseurModel.getSuperviseurByAmi(id_ami);
+        const { ref_ami, nom, email } = req.body;
+        const isPresent = await superviseurModel.getSuperviseurByAmi(ref_ami);
         if (isPresent.length && isPresent[0].email == email) {
-            res.status(400).json({ success: false, message: "Adresse e-mail déjà existée" });
+            res.status(409).json({ success: false, message: "Adresse e-mail déjà existante" });
         } else {
-            const result = await superviseurModel.addSuperviseur([nom, email, id_ami]);
+            await superviseurModel.addSuperviseur([nom, email, ref_ami]);
             res.status(200).json({ success: true, message: `Superviseur ajouté.`});
         }
 
@@ -30,8 +30,8 @@ const addSuperviseur = async (req, res) => {
 
 const removeSuperviseur = async (req, res) => {
     try {
-        const { id_superviseur } = req.params;
-        const result = await superviseurModel.removeSuperviseur(id_superviseur);
+        const { id } = req.params;
+        await superviseurModel.removeSuperviseur(id);
         res.status(200).json({ success: true, message: `Superviseur supprimé.`});
     } catch (error) {
         console.error("Error getting list by ami:", error);

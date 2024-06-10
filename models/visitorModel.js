@@ -1,20 +1,19 @@
-const pool = require("./connection");
+const pool = require("../database/connection");
 
 const insert = async (visiteurInfo) => {
 
     const sql = `
-        INSERT INTO visiteur (
+        INSERT INTO dao_visiteur (
             nom, 
             adresse,
             id_region,
-            id_district,
             type,
-            cin_nif, 
-            email_entreprise, 
+            cin_nif,
+            email,
             telephone1,
             telephone2,
             telephone3
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     const result =  await pool.query(sql, [...visiteurInfo])
     return result.insertId;
@@ -31,8 +30,8 @@ const getVisitorById = async (id_visiteur) => {
 
 const getVisitorByEmail = async (email) => {
     const sql = `
-        SELECT * FROM visiteur
-        WHERE email_entreprise = ?
+        SELECT * FROM dao_visiteur
+        WHERE email= ?
     `;
     const result = await pool.query(sql, [email]);
     return result[0];
@@ -45,16 +44,14 @@ const getVisitorByToken = async (token) => {
                v.nom,
                v.adresse,
                r.nom_region,
-               d.nom_district,
                v.cin_nif,
-               v.email_entreprise,
+               v.email,
                v.telephone1,
                v.telephone2,
                v.telephone3
-        FROM visiteur v
+        FROM dao_visiteur v
         INNER JOIN region r ON r.id_region = v.id_region
-        INNER JOIN district d ON d.id_district = v.id_district
-        INNER JOIN tokens t ON v.email_entreprise = t.email
+        INNER JOIN dao_token t ON v.email = t.email
         WHERE t.token = ?
     `;
     const result = await pool.query(sql, [token]);
@@ -63,15 +60,14 @@ const getVisitorByToken = async (token) => {
 
 const update = async (updateFields, id, count) => {
     const sql = `
-        UPDATE visiteur
+        UPDATE dao_visiteur
         SET 
             nom = ?,
             adresse = ?,
             id_region = ?,
-            id_district = ?,
             type = ?,
             cin_nif = ?, 
-            email_entreprise = ?, 
+            email = ?, 
             telephone1 = ?,
             telephone2 = ?,
             telephone3 = ?,

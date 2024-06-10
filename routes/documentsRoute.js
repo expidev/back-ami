@@ -1,16 +1,17 @@
 const documentsController = require("../controllers/documentController");
-const logController = require("../controllers/logController");
+const telechargementController = require("../controllers/telechargementController");
+const { validateAjoutDossier } = require('../utility/validation');
 const { authenticateAdmin } = require("../middleware/authMiddleware");
 
 const router = require("express").Router();
 
-router.get('/documents/:id_ami', authenticateAdmin, documentsController.getListByAmi)
+router.get('/documents/:ref_ami', authenticateAdmin, documentsController.getListByAmi)
 
-router.get('/documents/:id_ami/:token', logController.insertLog, documentsController.getListByAmi)
+router.get('/documents/:ref_ami/:token', telechargementController.insertTelechargement, documentsController.getListByAmi)
 
-router.get('/download/:id_ami', documentsController.downloadZip)
+router.get('/download/:ref_ami', documentsController.downloadZip)
 
-router.post('/ajout', authenticateAdmin, documentsController.uploadAndInsert);
+router.post('/ajout', authenticateAdmin, validateAjoutDossier, documentsController.uploadAndInsert);
 
 router.post('/download/', documentsController.downloadDocument)
 
