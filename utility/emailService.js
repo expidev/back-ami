@@ -17,7 +17,7 @@ const sendEmailWithToken = async (to,id_ami, token) => {
   Bonjour,
 
   Veuillez suivre le lien suivant pour continuer: 
-  ${config.FRONTEND}/dao/${encodeURIComponent(id_ami)}/${token}
+  ${config.FRONTEND_URL}/dao/${encodeURIComponent(id_ami)}/${token}
   
   Cordialement,
     `;

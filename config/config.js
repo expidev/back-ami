@@ -13,7 +13,8 @@ const config =  {
     SMTP_HOST: process.env.SMTP_HOST,
     SMTP_PORT: process.env.PORT,
     FRONTEND: process.env.FRONTEND,
-    NOTIFIFACTION_SENDER: process.env.NOTIFIFACTION_SENDER
+    NOTIFIFACTION_SENDER: process.env.NOTIFIFACTION_SENDER,
+    FRONTEND_URL: process.env.FRONTEND_URL
 }
 
 module.exports = { config } 

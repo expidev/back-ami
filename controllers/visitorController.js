@@ -62,7 +62,7 @@ const getVisitorById = async (req, res) => {
         res.status(200);
         res.json(result);
     } catch(err) {
-        console.log(error.message)
+        console.log(err.message)
         res.status(404);
     }
 }

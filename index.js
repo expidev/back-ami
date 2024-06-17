@@ -1,11 +1,20 @@
 const express = require("express")
 const route = require("./routes/route");
 const cors = require("cors");
+const { config } = require("./config/config");
 
 const app = express();
 const port = 3000;
 
-app.use(cors());
+const corsOptions = {
+    origin: config.FRONTEND_URL, // Update with your front-end domain
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true, // Enable this if you need to include cookies in the requests
+    optionsSuccessStatus: 204,
+};
+console.log(corsOptions)
+
+app.use(cors(corsOptions));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());

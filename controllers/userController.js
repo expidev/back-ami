@@ -7,7 +7,11 @@ const signin = async (req, res) => {
     try {
         const { email, mot_de_passe } = req.body;
         const user = await userModel.getUserByEmail(email)
-        const isMatch = await bcrypt.compare(mot_de_passe, user.password_hash);
+        let isMatch = false
+
+        if (user) {
+            isMatch = await bcrypt.compare(mot_de_passe, user.password_hash);
+        }
 
         if (!user || !isMatch) {
             return res.status(400).json({ message: 'Login invalide' });
@@ -20,6 +24,7 @@ const signin = async (req, res) => {
         return res.json({ token });
     
     } catch(err) {
+        console.log(err)
         res.status(500).json({error: err.message})
     }
 }
