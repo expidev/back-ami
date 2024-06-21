@@ -9,6 +9,8 @@ router.get('/ami/page/:page', authenticateAdmin, amiController.getListByPage);
 
 router.get('/ami/:ref_ami', amiController.getAmiByRef);
 
+router.get('/ami/unique_ref/:ref_unique', amiController.getAmiByRefUnique);
+
 router.delete('/ami/:ref_ami', authenticateAdmin, amiController.removeAmiByRef);
 
 router.get('/search/', authenticateAdmin, amiController.searchAmiByRef);

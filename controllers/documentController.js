@@ -2,7 +2,8 @@ const multer = require('multer');
 const documentsModel = require("../models/documentsModel");
 const amiModel = require("../models/amiModel")
 const pool = require("../database/connection")
-const { removeFile, downloadFile, downloadZipDocuments } = require('../utility');
+const { v4: uuidv4 } = require('uuid');
+const { removeFile, downloadFile, downloadZipDocuments, handleSlash } = require('../utility');
 const path = require('path');
 
 // change the destination and the filename of the file upload
@@ -49,7 +50,8 @@ const uploadAndInsert = async (req, res) => {
 
         const files = req.files;
         const { ref_ami, description, action } = req.body;
-        console.log(req.body)
+        const ref_unique = uuidv4();
+        
         try {
             await pool.query("START TRANSACTION");
             const response = await amiModel.getAmiByRef(ref_ami);
@@ -59,7 +61,7 @@ const uploadAndInsert = async (req, res) => {
                 if (response.length !== 0) {
                     return res.status(409).json({ message: 'Duplicate Ref. AMI' });
                 }
-                await amiModel.addAmi([ref_ami, req.user.id, description, new Date()]);
+                await amiModel.addAmi([ref_ami, req.user.id, description, ref_unique, new Date()]);
             }
             
             if (files && files.length > 0) {
@@ -88,7 +90,8 @@ const uploadAndInsert = async (req, res) => {
 
 const getListByAmi = async (req, res) => {
     try {
-        const ref_ami = req.params.ref_ami;
+        let { ref_ami } = req.params;
+        ref_ami = handleSlash(ref_ami)
         const result = await documentsModel.getListByAmi(ref_ami);
         res.status(200).json(result);
     } catch (error) {
@@ -122,7 +125,8 @@ const downloadDocument = async (req, res) => {
 
 const downloadZip = async (req, res) => {
     try {
-        const { ref_ami } = req.params;
+        let { ref_ami } = req.params;
+        ref_ami = handleSlash(ref_ami)
         const fileDataArray = await documentsModel.getListByAmi(ref_ami)
         await downloadZipDocuments(res, fileDataArray);
     } catch (error) {

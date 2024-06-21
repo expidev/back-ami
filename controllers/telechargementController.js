@@ -2,13 +2,15 @@ const telechargementModel = require("../models/telechargementModel");
 const visitorModel = require("../models/visitorModel");
 const supervisorModel = require("../models/superviseurModel");
 const { sendEmailToAdmin } = require("../utility/emailService");
+const { handleSlash } = require("../utility");
 
 const insertTelechargement = async (req, res, next) => {
     try {
-        const {
+        let {
             ref_ami, 
             token
         } = req.params;
+        ref_ami = handleSlash(ref_ami);
         const visitor = await visitorModel.getVisitorByToken(token);
         if (visitor) {
             const hasLoggedBefore = await telechargementModel.getTelechargement(ref_ami, visitor.id_visiteur)
@@ -20,6 +22,7 @@ const insertTelechargement = async (req, res, next) => {
                 await telechargementModel.insertTelechargement(ref_ami, visitor.id_visiteur);
                 const response = await supervisorModel.getSuperviseurByAmi(ref_ami)
                 const ccEmail = response.map(visitor => visitor.email)
+                
                 await sendEmailToAdmin(process.env.DEFAULT_LOG_EMAIL, ccEmail, {ref_ami, ...visitor})
             }
         } else {

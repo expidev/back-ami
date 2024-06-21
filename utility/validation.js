@@ -57,7 +57,7 @@ const validateDemandeDossier = [
     return true;
   }),
   body('telephone3').custom((value) => {
-    const telephoneRegex = /^[0+][0-9 ]{9,18}$/;
+    const telephoneRegex = /^[0+][0-9 -]{9,18}$/;
     if (value && !telephoneRegex.test(value)) {
         throw new Error('Numéro de téléphone invalide.');
     }

@@ -3,7 +3,7 @@ const pool = require('../database/connection')
 
 const amiModel = require("../models/amiModel");
 const documentModel = require("../models/documentsModel");
-const { removeFiles } = require("../utility");
+const { removeFiles, handleSlash } = require("../utility");
 const { removeSuperviseurByAmi } = require('../models/superviseurModel');
 
 const getListByPage = async (req, res) => {
@@ -37,12 +37,23 @@ const getAmiByRef = async (req, res) => {
     }
 }
 
+const getAmiByRefUnique = async (req, res) => {
+    try {
+        const result= await amiModel.getAmiByRefUnique(req.params.ref_unique);
+        res.status(200).json(result);
+    } catch(err) {
+        console.log(err.message)
+        res.status(500)
+    }
+}
+
 // remove the Ami, but remove all that connects to it, requires a transaction
 const removeAmiByRef = async (req, res) => {
     try {
         await pool.query('START TRANSACTION');
 
-        const { ref_ami } = req.params
+        let { ref_ami } = req.params
+        ref_ami = handleSlash(ref_ami)
         const results = await documentModel.getListByAmi(ref_ami)
         await documentModel.removeDocumentsByRefAmi(ref_ami)
         await removeSuperviseurByAmi(ref_ami);//
@@ -66,7 +77,8 @@ const removeAmiByRef = async (req, res) => {
 
 const searchAmiByRef = async (req, res) => {
     try {
-        const { ref_ami } = req.params;
+        let { ref_ami } = req.params;
+        ref_ami = handleSlash(ref_ami) || ""
         const result= await amiModel.searchAmiByRef(ref_ami);
         res.status(200).json(result);
     } catch(err) {
@@ -75,4 +87,4 @@ const searchAmiByRef = async (req, res) => {
     }
 }
 
-module.exports = { getListByPage, getAmiByRef, searchAmiByRef, removeAmiByRef, countPage }
+module.exports = { getListByPage, getAmiByRef, getAmiByRefUnique, searchAmiByRef, removeAmiByRef, countPage }

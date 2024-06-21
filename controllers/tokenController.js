@@ -1,10 +1,12 @@
 const { v4: uuidv4 } = require('uuid');
 const Token = require('../models/tokenModel');
 const { sendEmailWithToken } = require('../utility/emailService');
+const { handleSlash } = require('../utility');
 
 const requestDownload = async (req, res, next) => {
-    const { ref_ami, email } = req.body;
+    let { ref_ami, ref_unique, email } = req.body;
     const token = uuidv4();
+    ref_ami = handleSlash(ref_ami);
 
     try {
       const isPresent = await Token.findByEmail(email);
@@ -14,8 +16,7 @@ const requestDownload = async (req, res, next) => {
       } else {
         await Token.create(email, token);
       }
-
-      sendEmailWithToken(email, ref_ami, token);
+      sendEmailWithToken(email, ref_unique, token);
       next()
     } catch (error) {
       console.error('Error submitting download request:', error);

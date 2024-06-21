@@ -1,8 +1,10 @@
 const superviseurModel = require("../models/superviseurModel");
+const { handleSlash } = require("../utility");
 
 const getSuperviseurByAmi = async (req, res) => {
     try {
-        const { ref_ami } = req.params;
+        let { ref_ami } = req.params;
+        ref_ami = handleSlash(ref_ami)
         const result = await superviseurModel.getSuperviseurByAmi(ref_ami);
         res.status(200).json(result);
     } catch(err) {

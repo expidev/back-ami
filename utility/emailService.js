@@ -11,13 +11,13 @@ const transporter = nodemailer.createTransport({
     }
 })
 
-const sendEmailWithToken = async (to,id_ami, token) => {
+const sendEmailWithToken = async (to, ref_unique, token) => {
     const subject = 'Confirmation de la demande des dossiers';
     const text = `
   Bonjour,
 
   Veuillez suivre le lien suivant pour continuer: 
-  ${config.FRONTEND_URL}/dao/${encodeURIComponent(id_ami)}/${token}
+  ${config.FRONTEND_URL}/dao/${encodeURIComponent(ref_unique)}/${token}
   
   Cordialement,
     `;
@@ -40,7 +40,7 @@ const sendEmailWithToken = async (to,id_ami, token) => {
       const text = `
       Bonjour,
 
-      Veuillez trouvez ci-dessous les informations du visiteur ayant téléchargé l'appel d'offre ${visitor.id_ami}
+      Veuillez trouvez ci-dessous les informations du visiteur ayant téléchargé l'appel d'offre ${visitor.ref_ami}
       
       Type: ${visitor.type}
       Nom: ${visitor.nom}

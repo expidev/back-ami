@@ -75,5 +75,9 @@ const downloadZipDocuments = async (res, fileDataArray) => {
   }
 };
 
+const handleSlash = (input) => {
+  return input ? input.replace(/,/g, '/'): "";
+}
 
-module.exports = { removeFile, removeFiles, downloadFile, downloadZipDocuments };
+
+module.exports = { removeFile, removeFiles, downloadFile, downloadZipDocuments, handleSlash };

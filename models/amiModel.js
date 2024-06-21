@@ -6,6 +6,7 @@ const getListByPage = async (page) => {
       const offset = (page - 1) * limit;
       const sql = `
         SELECT * FROM dao_ami
+        ORDER BY id_ami DESC
         LIMIT ? OFFSET ?
       `;
 
@@ -22,6 +23,18 @@ const countPage = async (page) => {
     `;
 
     return await pool.query(sql);
+  } catch (error) {
+    return error.message
+  }
+}
+
+const getAmiByRefUnique = async (ref_unique) => {
+  try {
+    const sql = `
+      SELECT * FROM dao_ami WHERE ref_unique = ?
+    `;
+
+    return await pool.query(sql, [ref_unique]);
   } catch (error) {
     return error.message
   }
@@ -82,8 +95,9 @@ const addAmi = async (ami) => {
         ref_ami,
         id_admin,
         description,
+        ref_unique,
         date_creation
-      ) VALUES (?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?)
     `;
 
     return await pool.query(sql, [...ami]);
@@ -95,8 +109,9 @@ const addAmi = async (ami) => {
 module.exports =  { 
   getListByPage, 
   countPage, 
+  getAmiByRefUnique, 
+  searchAmiByRef,
   getAmiByRef, 
-  searchAmiByRef, 
   updateDescription, 
   addAmi,
   removeAmiByRef

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jun 12, 2024 at 08:17 AM
+-- Generation Time: Jun 21, 2024 at 02:22 PM
 -- Server version: 5.7.31
 -- PHP Version: 7.2.33
 
@@ -34,19 +34,21 @@ CREATE TABLE IF NOT EXISTS `dao_ami` (
   `id_admin` int(11) NOT NULL,
   `description` varchar(2000) NOT NULL,
   `date_creation` date NOT NULL,
+  `ref_unique` varchar(255) NOT NULL,
   PRIMARY KEY (`id_ami`),
   UNIQUE KEY `ref_ami` (`ref_ami`),
   KEY `FK_1` (`id_admin`)
-) ENGINE=MyISAM AUTO_INCREMENT=51 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=74 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `dao_ami`
 --
 
-INSERT INTO `dao_ami` (`id_ami`, `ref_ami`, `id_admin`, `description`, `date_creation`) VALUES
-(50, 'test/12', 5, 'lorem ipsum', '2024-06-12'),
-(47, 'test/2025', 5, 'ererere', '2024-06-07'),
-(46, 'test/ref', 5, 'description', '2024-06-07');
+INSERT INTO `dao_ami` (`id_ami`, `ref_ami`, `id_admin`, `description`, `date_creation`, `ref_unique`) VALUES
+(70, '3', 6, 'dfd', '2024-06-21', '7ec143eb-ded4-4a4b-89d7-791b3f876dcd'),
+(71, '6', 6, 'dfdf', '2024-06-21', '43541c57-39e7-4c66-b68d-8dfc28cb61e2'),
+(72, 'test/1', 6, 'dfdf', '2024-06-21', '46f27b16-69b3-45d9-bcf4-7e80e9161567'),
+(73, 'lorem+°2dfere dfe', 6, 'erer', '2024-06-21', '97d20203-bcef-403a-a157-add2c83a5435');
 
 -- --------------------------------------------------------
 
@@ -66,7 +68,14 @@ CREATE TABLE IF NOT EXISTS `dao_fichier` (
   PRIMARY KEY (`id_fichier`),
   KEY `id_admin` (`id_admin`),
   KEY `ref_ami` (`ref_ami`) USING BTREE
-) ENGINE=MyISAM AUTO_INCREMENT=215 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=237 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `dao_fichier`
+--
+
+INSERT INTO `dao_fichier` (`id_fichier`, `id_admin`, `ref_ami`, `nom_fichier`, `type_fichier`, `taille_fichier`, `date_upload`) VALUES
+(234, 6, 'lorem+°2dfere dfe', '1718979490983_Cnd 3.PNG', 'image/png', '25302', '2024-06-21');
 
 -- --------------------------------------------------------
 
@@ -82,7 +91,15 @@ CREATE TABLE IF NOT EXISTS `dao_superviseur` (
   `ref_ami` varchar(100) NOT NULL,
   PRIMARY KEY (`id_superviseur`),
   KEY `id_ami` (`ref_ami`)
-) ENGINE=MyISAM AUTO_INCREMENT=50 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=70 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `dao_superviseur`
+--
+
+INSERT INTO `dao_superviseur` (`id_superviseur`, `nom`, `email`, `ref_ami`) VALUES
+(68, 'Nasandratra', 'nasandratra.access4@gmail.com', 'lorem+°2dfere dfe'),
+(69, 'karoty', 'har21055@byui.edu', 'lorem+°2dfere dfe');
 
 -- --------------------------------------------------------
 
@@ -100,7 +117,15 @@ CREATE TABLE IF NOT EXISTS `dao_telechargement` (
   PRIMARY KEY (`id`,`ref_ami`,`id_visiteur`),
   KEY `FK_1` (`ref_ami`),
   KEY `FK_2` (`id_visiteur`)
-) ENGINE=MyISAM AUTO_INCREMENT=100 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=104 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `dao_telechargement`
+--
+
+INSERT INTO `dao_telechargement` (`id`, `ref_ami`, `id_visiteur`, `date_telechargement`, `count`) VALUES
+(103, 'lorem+°2dfere dfe', 30, '2024-06-21', 3),
+(102, 'test/1', 30, '2024-06-21', 1);
 
 -- --------------------------------------------------------
 
@@ -116,7 +141,14 @@ CREATE TABLE IF NOT EXISTS `dao_token` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=31 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=34 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `dao_token`
+--
+
+INSERT INTO `dao_token` (`id`, `token`, `email`, `created_at`) VALUES
+(33, 'd6f3a9b8-e76f-4157-ab1f-6d33303f3bbe', 'nasandratra.access4@gmail.com', '2024-06-21 14:19:39');
 
 -- --------------------------------------------------------
 
@@ -132,14 +164,14 @@ CREATE TABLE IF NOT EXISTS `dao_user` (
   `type` enum('admin','visitor') NOT NULL,
   `date_creation` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_user`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `dao_user`
 --
 
 INSERT INTO `dao_user` (`id_user`, `email`, `password_hash`, `type`, `date_creation`) VALUES
-(5, 'adminweb@fid.mg', '$2a$10$rgssuLxNsvezFVBnvsSkFe6PQPOX3wgAdqM5BCN.WjLQ1KdvDGvjq', 'admin', '2024-06-07 06:24:23');
+(6, 'adminweb@fid.mg', '$2a$10$kP7s4Feh9JcF9wNJFrt9M.c37UF7SXVAKn.LZo7tyqJZZkIew5wD6', 'admin', '2024-06-21 13:28:34');
 
 -- --------------------------------------------------------
 
@@ -162,7 +194,14 @@ CREATE TABLE IF NOT EXISTS `dao_visiteur` (
   `count` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id_visiteur`),
   KEY `fk_region` (`id_region`)
-) ENGINE=MyISAM AUTO_INCREMENT=28 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=31 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `dao_visiteur`
+--
+
+INSERT INTO `dao_visiteur` (`id_visiteur`, `nom`, `adresse`, `id_region`, `type`, `cin_nif`, `email`, `telephone1`, `telephone2`, `telephone3`, `count`) VALUES
+(30, 'Rajema Michelson', 'LOT ambohitsitonina', 22, 'individu', 'Rajema Michelson', 'nasandratra.access4@gmail.com', '+1325650565656', '+261344323024', '', 4);
 
 -- --------------------------------------------------------
 
